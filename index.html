@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="webthemez">
+    <title>SIGKDD 2025 Tutorial - Model Extraction Attack and Defenses for Large Language Models</title>
+    <!-- core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet"> 
+    <link href="css/prettyPhoto.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet"> 
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->       
+    <link rel="shortcut icon" href="images/ico/favicon.png"> 
+</head> 
+
+<body id="home">
+    <header id="header">
+        <!-- ✅ 原有导航栏 -->
+        <nav id="main-nav" class="navbar navbar-default navbar-fixed-top" role="banner">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                
+                <div class="collapse navbar-collapse navbar-right">
+                    <ul class="nav navbar-nav">
+                        <li class="scroll active"><a href="#home">Home</a></li> 
+                        <li class="scroll"><a href="#features">Content</a></li>
+                        <li class="scroll"><a href="#services">Related Materials</a></li>
+                        <li class="scroll"><a href="#about">Key References</a></li> 
+                        <li class="scroll"><a href="#our-team">Presenters</a></li>
+                        <li class="scroll"><a href="#contact-us">Contact</a></li>                        
+                    </ul>
+                </div>
+            </div><!--/.container-->
+        </nav><!--/nav-->
+    </header><!--/header-->
+
+    <!-- ✅ 添加 margin-top 来避开 fixed 导航栏遮挡 -->
+    <div style="height: 80px;"></div>
+    <!-- ✅ 顶部横向 logo 图 -->
+    <div style="width: 100%; background-color: #111; text-align: center;">
+        <img src="images/logo_transparent.png" alt="school logos" style="max-width: 80%; height: auto;">
+    </div>
+
+    <section id="hero-banner">
+        <div class="banner-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Model Extraction Attack and Defense for Large Language Models: Recent Advances, Challenges, and Future Prospectives</h2>
+                        <p><br/> <b>Time</b>: 01:00 PM - 04:00 PM (ET), Sunday, August 3. <br/> <b>Location</b>: Room xxx, Metro Toronto Convention Centre, Toronto, Canada.</p>
+                        <a class="btn btn-primary btn-lg" href="https://labrai.github.io/KDD2025_Tutorial/files/KDD25_Tutorial_MEA_LLM_July_30.pdf">Slides</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!--/#main-slider-->
+
+    <section id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title wow fadeInDown">Abstract</h2>
+                <p class="wow fadeInDown">Model extraction attacks pose significant security threats to deployed language models, potentially compromising intellectual property and user privacy. This survey provides a comprehensive taxonomy of LLM-specific extraction attacks and defenses, categorizing attacks into functionality extraction, training data extraction, and prompt security attacks. We analyze various attack methodologies including API-based knowledge distillation, direct querying, parameter recovery, and prompt stealing techniques that exploit transformer architectures. We then examine defense mechanisms organized into model protection, data privacy protection, and prompt security strategies, evaluating their effectiveness across different deployment scenarios. We propose specialized metrics for evaluating both attack effectiveness and defense performance, addressing the specific challenges of generative language models. Through our analysis, we identify critical limitations in current approaches and propose promising research directions, including integrated attack methodologies and adaptive defense mechanisms that balance security with model utility. This work serves NLP researchers, ML engineers, and security professionals seeking to protect language models in production environments.</p>
+            </div>
+        </div>
+
+<div class="row">
+<div class="col-md-10 col-md-offset-1 wow fadeInDown">
+<h2>Part 1: Background and Motivation: Model Extraction in the Age of LLMs (30 mins)</h2>
+<ul class="listarrow">
+<li><i class="fa fa-angle-double-right"></i>The rise of proprietary LLMs and the economic stakes behind model protection.</li>
+<li><i class="fa fa-angle-double-right"></i>Recent high-profile controversies (e.g., the DeepSeek incident) and the increasing concern over unauthorized replication of LLMs.</li>
+<li><i class="fa fa-angle-double-right"></i>Motivations behind model extraction attacks: cost reduction, performance cloning, and intellectual property threats.</li>
+<li><i class="fa fa-angle-double-right"></i>Threat model overview: black-box access, API-level interactions, and systemic vulnerabilities in MLaaS.</li>
+</ul>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-md-10 col-md-offset-1 wow fadeInDown">
+<h2>Part 2: Taxonomy of Model Extraction Attacks in LLMs (30 mins)</h2>
+<!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa semper aliquam quis mattis quam adipiscing elit. Praesent eget risus vitae massa.</p> -->
+<ul class="listarrow">
+<li><i class="fa fa-angle-double-right"></i>Overview of key extraction objectives: functional replication, training data extraction, and prompt stealing.</li>
+<li><i class="fa fa-angle-double-right"></i>Functional Extraction: techniques for cloning LLM behavior using API queries or distilled models.</li>
+<li><i class="fa fa-angle-double-right"></i>Training Data Extraction: memory leakage and reconstruction of sensitive data (e.g., PII, rare sequences).</li>
+<li><i class="fa fa-angle-double-right"></i>Prompt Inversion and Stealing: threats to proprietary prompts and instructional alignment assets.</li>
+<li><i class="fa fa-angle-double-right"></i>Attack methodology pipeline: from query crafting to surrogate model training.</li>
+</ul>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-md-10 col-md-offset-1 wow fadeInDown">
+<h2>Part 3: Defense Techniques Against Model Extraction (30 mins)</h2>
+<ul class="listarrow">
+<li><i class="fa fa-angle-double-right"></i>Architectural defenses: watermarking, model structure randomization, and attention tampering.</li>
+<li><i class="fa fa-angle-double-right"></i>Output-level protections: GuardEmb, ModelShield, and controlled response perturbation.</li>
+<li><i class="fa fa-angle-double-right"></i>Training-time defenses: data sanitization, selective forgetting, and differential privacy.</li>
+<li><i class="fa fa-angle-double-right"></i>Prompt protection and inference-time monitoring: watermarking prompts and detecting suspicious access patterns.</li>
+</ul>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-md-10 col-md-offset-1 wow fadeInDown">
+<h2>Part 4: Evaluation Metrics and Trade-offs (30 mins)</h2>
+<!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa semper aliquam quis mattis quam adipiscing elit. Praesent eget risus vitae massa.</p> -->
+<ul class="listarrow">
+<li><i class="fa fa-angle-double-right"></i>Measuring extraction effectiveness: functional similarity, perplexity divergence, memorization rates.</li>
+<li><i class="fa fa-angle-double-right"></i>Measuring defense robustness: attack prevention rate, watermark persistence, query anomaly detection.</li>
+<li><i class="fa fa-angle-double-right"></i>Utility-security trade-offs: balancing usability and protection in deployed systems.</li>
+<li><i class="fa fa-angle-double-right"></i>Visualization of defense coverage across different attack vectors.</li>
+</ul>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-md-10 col-md-offset-1 wow fadeInDown">
+<h2>Part 5: Case Studies and Real-World Scenarios (30 mins)</h2>
+<!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa semper aliquam quis mattis quam adipiscing elit. Praesent eget risus vitae massa.</p> -->
+<ul class="listarrow">
+<li><i class="fa fa-angle-double-right"></i>Case study: how a commercial-grade model was cloned with limited API budget.</li>
+<li><i class="fa fa-angle-double-right"></i>Open-source vs. proprietary model exposure risk.</li>
+<li><i class="fa fa-angle-double-right"></i>Lessons from deployed LLM systems (e.g., chatbot APIs, LLM-as-a-service).</li>
+<li><i class="fa fa-angle-double-right"></i>Legal and ethical implications of extraction in industry practice.</li>
+</ul>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-md-10 col-md-offset-1 wow fadeInDown">
+<h2>Part 6: Research Gaps and Future Directions (30 mins)</h2>
+<!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa semper aliquam quis mattis quam adipiscing elit. Praesent eget risus vitae massa.</p> -->
+<ul class="listarrow">
+<li><i class="fa fa-angle-double-right"></i>Remaining limitations of current attack and defense techniques.</li>
+<li><i class="fa fa-angle-double-right"></i>Toward integrated, adaptive defenses and theoretical guarantees.</li>
+<li><i class="fa fa-angle-double-right"></i>Challenges in monitoring, watermarking, and architectural redesign.</li>
+<li><i class="fa fa-angle-double-right"></i>Open discussion: how can academia and industry jointly shape responsible LLM deployment?</li>
+</ul>
+</div>
+</div>
+
+<!--ADD some blank space between the contents-->
+<div style="height: 70px;"></div>
+
+<!--Tutirial Schedule Table-->
+<div class="row">
+  <div class="col-md-10 col-md-offset-1 wow fadeInDown text-center">
+    <h2 style="font-weight: bold; margin-bottom: 20px;">DETAILED SCHEDULE (August 3rd, 2025)</h2>
+    <div style="overflow-x:auto;">
+      <table style="margin: 0 auto; border-collapse: collapse; width: 100%; max-width: 1100px; font-family: 'Georgia', serif; border: 3px solid #cccccc;">
+        <thead style="background-color: #3399CC; color: white; text-align: center; font-size: 24px;">
+          <tr>
+            <th style="padding: 12px; text-align: center;">Time</th>
+            <th style="padding: 12px; text-align: center;">Speaker</th>
+            <th style="padding: 12px; text-align: center;">Title</th>
+          </tr>
+        </thead>
+        <tbody style="background-color: #ffffff;">
+          <tr style="border-bottom: 3px solid #cccccc;">
+            <td style="padding: 10px; font-size: 18px;">01:00 PM - 01:20 PM</td>
+            <td style="font-size: 18px;">Lincan Li, Kaize Ding, Yue Zhao</td>
+            <td style="font-size: 18px;">Opening and Welcome</td>
+          </tr>
+          <tr style="border-bottom: 3px solid #cccccc;">
+            <td style="padding: 10px; font-size: 18px;">01:20 PM - 01:50 PM</td>
+            <td style="font-size: 18px;">Lincan Li</td>
+            <td style="font-size: 18px;">Background and Motivation: Model Extraction in the Age of LLMs</td>
+          </tr>
+          <tr style="border-bottom: 3px solid #cccccc;">
+            <td style="padding: 10px; font-size: 18px;">01:50 PM - 02:20 PM</td>
+            <td style="font-size: 18px;">Lincan Li</td>
+            <td style="font-size: 18px;">Taxonomy of Model Extraction Attacks in LLMs</td>
+          </tr>
+          <tr style="border-bottom: 3px solid #cccccc;">
+            <td style="padding: 10px; font-size: 18px;">02:20 PM - 02:50 PM</td>
+            <td style="font-size: 18px;">Lincan Li</td>
+            <td style="font-size: 18px;">Defense Techniques Against Model Extraction</td>
+          </tr>
+          <tr style="border-bottom: 3px solid #cccccc;">
+            <td style="padding: 10px; font-size: 18px;">02:50 PM - 03:10 PM</td>
+            <td style="font-size: 18px;">Lincan Li</td>
+            <td style="font-size: 18px;">Evaluation Metrics and Trade-offs</td>
+          </tr>
+          <tr style="border-bottom: 3px solid #cccccc;">
+            <td style="padding: 10px; font-size: 18px;">03:10 PM - 03:40 PM</td>
+            <td style="font-size: 18px;">Lincan Li, Kaize Ding, Yue Zhao</td>
+            <td style="font-size: 18px;">Case Studies and Real-World Scenarios</td>
+          </tr>
+          <tr style="border-bottom: 3px solid #cccccc;">
+            <td style="padding: 10px; font-size: 18px;">03:40 PM - 04:00 PM</td>
+            <td style="font-size: 18px;">Lincan Li, Kaize Ding, Yue Zhao</td>
+            <td style="font-size: 18px;">Research Gaps and Future Directions</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</section>
+
+
+
+ <section id="services" >
+        <div class="container">
+
+            <div class="section-header">
+                <h2 class="section-title wow fadeInDown">Related Materials</h2>
+                <!-- <p class="wow fadeInDown">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa <br> semper aliquam quis mattis quam.</p> -->
+            </div>
+
+            <div class="col-md-5 Featimg"> <img src="images/MEA_LLM_paper.png" alt="feature" class="img-responsive center-block"></div>
+                <div class="col-md-6">
+                <h2>A Survey on Model Extraction Attacks and Defenses for Large Language Models</h2>
+                <p>Authors: Kaixiang Zhao*, Lincan Li*, Kaize Ding, Neil Zhenqiang Gong, Yue Zhao, Yushun Dong. Proceedings of the 31st ACM SIGKDD international conference on knowledge discovery & data mining.</p>
+                <ul class="listarrow">
+                <li><i class="fa fa-angle-double-right"></i>Present a systematic taxonomy of model extraction attacks targeting LLMs, including functionality extraction, training data extraction, and prompt-targeted attacks.</li>
+                <li><i class="fa fa-angle-double-right"></i>Review state-of-the-art defenses, including model protection, data privacy protection, and prompt protection.</li>
+                <li><i class="fa fa-angle-double-right"></i>Analyze key tradeoffs and introduce evaluation metrics specific to the LLM threat landscape.</li>
+                <li><i class="fa fa-angle-double-right"></i>Identify open research challenges and suggest future directions for building more robust and secure LLMs.</li>
+                <li><i class="fa fa-angle-double-right"></i>A valuable resource for researchers, engineers, and practitioners working to secure LLMs.</li>
+                <a class="btn btn-primary" href="https://arxiv.org/pdf/2506.22521">Paper</a>
+                </ul>
+            </div>
+            <div class="wow fadeInDown"> <p> </div>
+
+            <div class="col-md-5 Featimg"> <img src="images/PyGIP_icon.png" alt="feature" class="img-responsive center-block"></div>
+                <div class="col-md-6">
+                <h2>PyGIP: a comprehensive Python library focused on model extraction attacks and defenses in Graph Neural Networks.</h2>
+                <ul class="listarrow">
+                <li><i class="fa fa-angle-double-right"></i>We developed this library PyGIP featured for built-in datasets and implementations of popular model extraction attack & defense algorithms</li>
+                <li><i class="fa fa-angle-double-right"></i>Built on PyTorch, PyTorch Geometric, and DGL, the library offers a robust framework for understanding, implementing, and defending against attacks targeting graph learning models.</li>
+                <p>Core Contributors & Acknowledgements: Bolin Shen, Yuxiang Sun, Lincan Li, Chenxi Zhao, Kaixiang Zhao, Zaiyi Zheng, Yushun Dong.</p>
+                <a class="btn btn-primary" href="https://labrai.github.io/pygip/">GitHub</a>
+                </ul>
+            </div>
+
+        </div>
+</section>
+
+<section id="about">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title wow fadeInDown">Key References</h2>
+            <!-- <p class="wow fadeInDown">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa <br> semper aliquam quis mattis quam.</p> -->
+        </div>
+
+
+<!--             <div class="row">
+            <div class="col-sm-6 wow fadeInLeft">
+              <img class="img-responsive" src="images/about.png" alt="">
+            </div>
+
+            <div class="col-sm-6 wow fadeInRight">
+                <h3 class="column-title">Our Company</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa semper aliquam quis mattis quam. Morbi vitae tortor tempus, placerat leo et, suscipit lectus. Phasellus ut euismod massa, eu eleifend ipsum.</p>
+
+                <p>Nulla eu neque commodo, dapibus dolor eget, dictum arcu. In nec purus eu tellus consequat ultricies. Donec feugiat tempor turpis, rutrum sagittis mi venenatis at. Sed molestie lorem a blandit congue. Ut pellentesque odio quis leo volutpat, vitae vulputate felis condimentum. </p>
+
+                <p>Praesent vulputate fermentum lorem, id rhoncus sem vehicula eu. Quisque ullamcorper, orci adipiscing auctor viverra, velit arcu malesuada metus, in volutpat tellus sem at justo.</p>
+
+
+                <a class="btn btn-primary" href="#">Learn More</a>
+
+            </div>
+        </div> -->
+
+        <div class="wow fadeInDown">
+        <ul class="col-sm-12 wow fadeInLeft">
+		<li>[1] Birch, L., Hackett, W., Trawicki, S., Suri, N. and Garraghan, P., 2023. Model leeching: An extraction attack targeting llms. arXiv preprint arXiv:2309.10544.</li>
+		<li>[2] Carlini, N., Paleka, D., Dvijotham, K.D., Steinke, T., Hayase, J., Cooper, A.F., Lee, K., Jagielski, M., Nasr, M., Conmy, A. and Yona, I., 2024. Stealing part of a production language model. arXiv preprint arXiv:2403.06634.</li>
+		<li>[3] Krishna, K., Tomar, G.S., Parikh, A.P., Papernot, N. and Iyyer, M., 2019. Thieves on sesame street! model extraction of bert-based apis. arXiv preprint arXiv:1910.12366.</li>
+		<li>[4] Chen, C., He, X., Lyu, L. and Wu, F., 2021. Killing one bird with two stones: model extraction and attribute inference attacks against bert-based apis. arXiv preprint arXiv:2105.10909.</li>
+		<li>[5] He, X., Lyu, L., Xu, Q. and Sun, L., 2021. Model extraction and adversarial transferability, your BERT is vulnerable!. arXiv preprint arXiv:2103.10013.</li>
+		<li>[6] Xu, Q., He, X., Lyu, L., Qu, L. and Haffari, G., 2021. Student surpasses teacher: Imitation attack for black-box NLP APIs. arXiv preprint arXiv:2108.13873.</li>
+		<li>[7] Yao, Y., Xiao, Z., Wang, B., Viswanath, B., Zheng, H. and Zhao, B.Y., 2017, November. Complexity vs. performance: empirical analysis of machine learning as a service. In Proceedings of the 2017 Internet Measurement Conference (pp. 384-397).</li>
+		<li>[8] Li, C., Song, Z., Wang, W. and Yang, C., 2023. A theoretical insight into attack and defense of gradient leakage in transformer. arXiv preprint arXiv:2311.13624.</li>
+		<li>[9] Liu, Y., Jia, J., Liu, H. and Gong, N.Z., 2022, November. Stolenencoder: stealing pre-trained encoders in self-supervised learning. In Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security (pp. 2115-2128).</li>
+		<li>[10] Nazari, N., Xiang, F., Fang, C., Makrani, H.M., Puri, A., Patwari, K., Sayadi, H., Rafatirad, S., Chuah, C.N. and Homayoun, H., 2024, April. Llm-fin: Large language models fingerprinting attack on edge devices. In 2024 25th International Symposium on Quality Electronic Design (ISQED) (pp. 1-6). IEEE.</li>
+		<li>[11] Carlini, N., Tramer, F., Wallace, E., Jagielski, M., Herbert-Voss, A., Lee, K., Roberts, A., Brown, T., Song, D., Erlingsson, U. and Oprea, A., 2021. Extracting training data from large language models. In 30th USENIX security symposium (USENIX Security 21) (pp. 2633-2650).</li>
+		<li>[12] Huang, J., Shao, H. and Chang, K.C.C., 2022. Are large pre-trained language models leaking your personal information?. arXiv preprint arXiv:2205.12628.</li>
+		<li>[13] Wang, J.G., Wang, J., Li, M. and Neel, S., 2024. Pandora's White-Box: Precise Training Data Detection and Extraction in Large Language Models. arXiv preprint arXiv:2402.17012.</li>
+		<li>[14] Dai, C., Lu, L. and Zhou, P., 2025. Stealing Training Data from Large Language Models in Decentralized Training through Activation Inversion Attack. arXiv preprint arXiv:2502.16086.</li>
+		<li>[15] Parikh, R., Dupuy, C. and Gupta, R., 2022. Canary extraction in natural language understanding models. arXiv preprint arXiv:2203.13920.</li>
+		<li>[16] Yang, Z., Zhao, Z., Wang, C., Shi, J., Kim, D., Han, D. and Lo, D., 2024, April. Unveiling memorization in code models. In Proceedings of the IEEE/ACM 46th International Conference on Software Engineering (pp. 1-13).</li>
+		<li>[17] Hui, B., Yuan, H., Gong, N., Burlina, P. and Cao, Y., 2024, December. Pleak: Prompt leaking attacks against large language model applications. In Proceedings of the 2024 on ACM SIGSAC Conference on Computer and Communications Security (pp. 3600-3614).</li>
+		<li>[18] Sha, Z. and Zhang, Y., 2024. Prompt stealing attacks against large language models. arXiv preprint arXiv:2402.12959.</li>
+		<li>[19] Yang, Y., Li, C., Li, Q., Ma, O., Wang, H., Wang, Z., Gao, Y., Chen, W. and Ji, S., 2025. {PRSA}: Prompt Stealing Attacks against {Real-World} Prompt Services. In 34th USENIX Security Symposium (USENIX Security 25) (pp. 2283-2302).</li>
+		<li>[20] Jiang, Z., Li, M., Yang, G., Wang, J., Huang, Y., Chang, Z. and Wang, Q., 2025. Mimicking the familiar: Dynamic command generation for information theft attacks in llm tool-learning system. arXiv preprint arXiv:2502.11358.</li>
+		<li>[21] Xu, J., Wang, F., Ma, M.D., Koh, P.W., Xiao, C. and Chen, M., 2024. Instructional fingerprinting of large language models. arXiv preprint arXiv:2401.12255.</li>
+		<li>[22] Zhang, C., Morris, J.X. and Shmatikov, V., 2024. Extracting prompts by inverting llm outputs. arXiv preprint arXiv:2405.15012.</li>
+		<li>[23] Li, Q., Shen, Z., Qin, Z., Xie, Y., Zhang, X., Du, T., Cheng, S., Wang, X. and Yin, J., 2024, October. TransLinkGuard: safeguarding Transformer models against model stealing in edge deployment. In Proceedings of the 32nd ACM International Conference on Multimedia (pp. 3479-3488).</li>
+		<li>[24] Li, Q., Xie, Y., Du, T., Shen, Z., Qin, Z., Peng, H., Zhao, X., Zhu, X., Yin, J. and Zhang, X., 2024. Coreguard: Safeguarding foundational capabilities of llms against model stealing in edge deployment. arXiv preprint arXiv:2410.13903.</li>
+		<li>[25] Pang, K., Qi, T., Wu, C., Bai, M., Jiang, M. and Huang, Y., 2025. Modelshield: Adaptive and robust watermark against model extraction attack. IEEE Transactions on Information Forensics and Security.</li>
+		<li>[26] Wang, L. and Cheng, M., 2024, November. GuardEmb: Dynamic Watermark for Safeguarding Large Language Model Embedding Service Against Model Stealing Attack. In Findings of the Association for Computational Linguistics: EMNLP 2024 (pp. 7518-7534).</li>
+		<li>[27] Feng, S. and Tramèr, F., 2024. Privacy backdoors: Stealing data with corrupted pretrained models. arXiv preprint arXiv:2404.00473.</li>
+		<li>[28] Patil, V., Hase, P. and Bansal, M., 2023. Can sensitive information be deleted from llms? objectives for defending against extraction attacks. arXiv preprint arXiv:2309.17410.</li>
+		<li>[29]Li, Q., Hong, J., Xie, C., Tan, J., Xin, R., Hou, J., Yin, X., Wang, Z., Hendrycks, D., Wang, Z. and Li, B., 2024. Llm-pbe: Assessing data privacy in large language models. arXiv preprint arXiv:2408.12787.</li>
+		<li>[30] Wang, Z., Yang, F., Wang, L., Zhao, P., Wang, H., Chen, L., Lin, Q. and Wong, K.F., 2023. Self-guard: Empower the llm to safeguard itself. arXiv preprint arXiv:2310.15851.</li>
+		<li>[31]He, X., Xu, Q., Zeng, Y., Lyu, L., Wu, F., Li, J. and Jia, R., 2022. Cater: Intellectual property protection on text generation apis via conditional watermarks. Advances in Neural Information Processing Systems, 35, pp.5431-5445.</li>
+		<li>[32] Kim, M., Kwon, T., Shim, K. and Kim, B., 2024, October. Protection of LLM Environment Using Prompt Security. In 2024 15th International Conference on Information and Communication Technology Convergence (ICTC) (pp. 1715-1719). IEEE.</li>
+		<li>[33] Wang, Z., Yang, F., Wang, L., Zhao, P., Wang, H., Chen, L., Lin, Q. and Wong, K.F., 2023. Self-guard: Empower the llm to safeguard itself. arXiv preprint arXiv:2310.15851.</li>
+            
+        </div>
+
+    </div>
+</section>
+
+
+
+<section id="contact-us">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title wow fadeInDown">Contact</h2>
+            <p class="wow fadeInDown">For any questions regarding this tutorial, please reach out to Lincan Li via ll24bb@fsu.edu</p>
+            <p class="wow fadeInDown">Powered by Lincan Li in 2025.</p>
+        </div>
+    </div>
+</section>
+
+<script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=300&t=n&d=Pept7o3XjrkXr_VkxikWJgfQ91MP0hvRds4j5myrycU&co=2d78ad&cmo=3acc3a&cmn=ff5353&ct=ffffff'></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script> 
+    <script src="js/mousescroll.js"></script>
+    <script src="js/smoothscroll.js"></script>
+    <script src="js/jquery.prettyPhoto.js"></script>
+    <script src="js/jquery.isotope.min.js"></script>
+    <script src="js/jquery.inview.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/custom-scripts.js"></script>
+</body>
+</html>
