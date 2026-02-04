@@ -134,10 +134,11 @@ color: #48B1DF;
   max-width: 900px;
   margin: 0 auto;
   font-family: "Georgia", serif;
+  font-size: 34px;
 }
 
 .schedule-title {
-  font-size: 26px;
+  font-size: 42px;
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -151,7 +152,7 @@ color: #48B1DF;
 .schedule-list li {
   display: flex;
   align-items: flex-start;
-  padding: 10px 0;
+  padding: 16px 0;
   border-bottom: 1px solid #ddd;
 }
 
@@ -160,18 +161,18 @@ color: #48B1DF;
 }
 
 .time {
-  width: 140px;
+  width: 250px;
   font-weight: bold;
   color: #5A1C2A; /* 你之前的酒红色 */
   flex-shrink: 0;
 }
 
 .event {
-  font-size: 18px;
+  font-size: 30px;
 }
 
 .note {
-  font-size: 16px;
+  font-size: 30px;
   color: #555;
 }
 
@@ -181,7 +182,7 @@ color: #48B1DF;
 }
 
 /* Mobile friendly */
-@media (max-width: 576px) {
+@media (max-width: 600px) {
   .schedule-list li {
     flex-direction: column;
   }
