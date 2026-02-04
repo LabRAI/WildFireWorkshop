@@ -131,10 +131,11 @@ color: #48B1DF;
 }
 
 .schedule-container {
-  max-width: 900px;
+  max-width: 1150px;
   margin: 0 auto;
   font-family: "Georgia", serif;
   font-size: 34px;
+  padding: 0 16px;   /* 防止贴边 */
 }
 
 .schedule-title {
@@ -165,10 +166,13 @@ color: #48B1DF;
   font-weight: bold;
   color: #5A1C2A; /* 你之前的酒红色 */
   flex-shrink: 0;
+  white-space: nowrap;   /* 禁止关键 */
 }
 
 .event {
   font-size: 30px;
+  line-height: 1.5;
+  flex: 1;   
 }
 
 .note {
