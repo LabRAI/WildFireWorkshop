@@ -43,7 +43,7 @@
                 <div class="collapse navbar-collapse navbar-right">
                     <ul class="nav navbar-nav">
                         <li class="scroll active"><a href="#home">Home</a></li> 
-                        <li class="scroll"><a href="#features">Content</a></li>
+                        <li class="scroll"><a href="#features">Overview</a></li>
                         <!-- <li class="scroll"><a href="#services">Related Materials</a></li> -->
                         <!-- <li class="scroll"><a href="#about">Key References</a></li>  -->
                         <li class="scroll"><a href="#our-team">Presenters</a></li>
@@ -85,12 +85,11 @@
 
 <div class="row">
 <div class="col-md-10 col-md-offset-1 wow fadeInDown">
-<h2>Part 1: Background and Motivation: Model Extraction in the Age of LLMs (30 mins)</h2>
+<h2>(Part 1) Prediction and Modeling: Spatial-temporal Intelligence for Fire Behavior, Spread, and Risk Modeling</h2>
 <ul class="listarrow">
-<li><i class="fa fa-angle-double-right"></i>The rise of proprietary LLMs and the economic stakes behind model protection.</li>
-<li><i class="fa fa-angle-double-right"></i>Recent high-profile controversies (e.g., the DeepSeek incident) and the increasing concern over unauthorized replication of LLMs.</li>
-<li><i class="fa fa-angle-double-right"></i>Motivations behind model extraction attacks: cost reduction, performance cloning, and intellectual property threats.</li>
-<li><i class="fa fa-angle-double-right"></i>Threat model overview: black-box access, API-level interactions, and systemic vulnerabilities in MLaaS.</li>
+<li><i class="fa fa-angle-double-right"></i>Short-term and mid-range forecasting: ignition likelihood, spread dynamics, intensity proxies, smoke impacts, and risk classification.</li>
+<li><i class="fa fa-angle-double-right"></i>Model families: spatial-temporal models, graph-based methods, generative modeling, hybrid simulation, foundation models, mathematical modeling, classical method.</li>
+<li><i class="fa fa-angle-double-right"></i>Trustworthy prediction: uncertainty quantification, calibration, interpretability, failure modes, and robust evaluation across regions and seasons.</li>
 </ul>
 </div>
 </div>
@@ -98,12 +97,12 @@
 
 <div class="row">
 <div class="col-md-10 col-md-offset-1 wow fadeInDown">
-<h2>Part 2: Taxonomy of Model Extraction Attacks in LLMs (30 mins)</h2>
+<h2>(Part 2) Infrastructure and Operations: Scalable Systems for Real-Time Wildfire Intelligence</h2>
 <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa semper aliquam quis mattis quam adipiscing elit. Praesent eget risus vitae massa.</p> -->
 <ul class="listarrow">
-<li><i class="fa fa-angle-double-right"></i>Overview of key extraction objectives: functional replication, training data extraction, and prompt stealing.</li>
-<li><i class="fa fa-angle-double-right"></i>Functional Extraction: techniques for cloning LLM behavior using API queries or distilled models.</li>
-<li><i class="fa fa-angle-double-right"></i>Training Data Extraction: memory leakage and reconstruction of sensitive data (e.g., PII, rare sequences).</li>
+<li><i class="fa fa-angle-double-right"></i>End-to-end architecture: data ingestion, streaming updates, model serving, monitoring, and audit trails.</li>
+<li><i class="fa fa-angle-double-right"></i>Computational considerations: scalability, latency, reliability, and deployment under limited resources or degraded connectivity.</li>
+<li><i class="fa fa-angle-double-right"></i>Interoperability: standards and interfaces that enable integration with emergency management tools and community infrastructure planning.</li>
 <li><i class="fa fa-angle-double-right"></i>Prompt Inversion and Stealing: threats to proprietary prompts and instructional alignment assets.</li>
 <li><i class="fa fa-angle-double-right"></i>Attack methodology pipeline: from query crafting to surrogate model training.</li>
 </ul>
@@ -113,12 +112,11 @@
 
 <div class="row">
 <div class="col-md-10 col-md-offset-1 wow fadeInDown">
-<h2>Part 3: Defense Techniques Against Model Extraction (30 mins)</h2>
+<h2>(Part 3) Wildfire Data and Resources: From Multimodal Real-World Records to Decision-Ready Signals</h2>
 <ul class="listarrow">
-<li><i class="fa fa-angle-double-right"></i>Architectural defenses: watermarking, model structure randomization, and attention tampering.</li>
-<li><i class="fa fa-angle-double-right"></i>Output-level protections: GuardEmb, ModelShield, and controlled response perturbation.</li>
-<li><i class="fa fa-angle-double-right"></i>Training-time defenses: data sanitization, selective forgetting, and differential privacy.</li>
-<li><i class="fa fa-angle-double-right"></i>Prompt protection and inference-time monitoring: watermarking prompts and detecting suspicious access patterns.</li>
+<li><i class="fa fa-angle-double-right"></i>Key data sources: satellite fire observations, weather and climate reanalysis/forecasts, fuels and vegetation, topography, and human activity indicators.</li>
+<li><i class="fa fa-angle-double-right"></i>Data challenges: spatiotemporal alignment, missingness, bias, spatial resolution mismatch, and real-time latency.</li>
+<li><i class="fa fa-angle-double-right"></i>Building reliable pipelines: quality control, provenance, and reproducible datasets that support both research and operations.</li>
 </ul>
 </div>
 </div>
@@ -126,44 +124,16 @@
 
 <div class="row">
 <div class="col-md-10 col-md-offset-1 wow fadeInDown">
-<h2>Part 4: Evaluation Metrics and Trade-offs (30 mins)</h2>
+<h2>(Part 4) Decision-Making and Stakeholder Engagement: From Models to Action</h2>
 <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa semper aliquam quis mattis quam adipiscing elit. Praesent eget risus vitae massa.</p> -->
 <ul class="listarrow">
-<li><i class="fa fa-angle-double-right"></i>Measuring extraction effectiveness: functional similarity, perplexity divergence, memorization rates.</li>
-<li><i class="fa fa-angle-double-right"></i>Measuring defense robustness: attack prevention rate, watermark persistence, query anomaly detection.</li>
-<li><i class="fa fa-angle-double-right"></i>Utility-security trade-offs: balancing usability and protection in deployed systems.</li>
-<li><i class="fa fa-angle-double-right"></i>Visualization of defense coverage across different attack vectors.</li>
+<li><i class="fa fa-angle-double-right"></i>Decision contexts: situational awareness, resource allocation, evacuation planning, mitigation and prescribed fire planning, and recovery prioritization.</li>
+<li><i class="fa fa-angle-double-right"></i>Human-centered design: translating model outputs into usable products for practitioners and local stakeholders.</li>
+<li><i class="fa fa-angle-double-right"></i>Local engagement focus: interactive discussion with partners such as the Tallahassee Fire Department, ARPC, and Tall Timbers to ground research in real needs.</li>
 </ul>
 </div>
 </div>
 
-
-<div class="row">
-<div class="col-md-10 col-md-offset-1 wow fadeInDown">
-<h2>Part 5: Case Studies and Real-World Scenarios (30 mins)</h2>
-<!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa semper aliquam quis mattis quam adipiscing elit. Praesent eget risus vitae massa.</p> -->
-<ul class="listarrow">
-<li><i class="fa fa-angle-double-right"></i>Case study: how a commercial-grade model was cloned with limited API budget.</li>
-<li><i class="fa fa-angle-double-right"></i>Open-source vs. proprietary model exposure risk.</li>
-<li><i class="fa fa-angle-double-right"></i>Lessons from deployed LLM systems (e.g., chatbot APIs, LLM-as-a-service).</li>
-<li><i class="fa fa-angle-double-right"></i>Legal and ethical implications of extraction in industry practice.</li>
-</ul>
-</div>
-</div>
-
-
-<div class="row">
-<div class="col-md-10 col-md-offset-1 wow fadeInDown">
-<h2>Part 6: Research Gaps and Future Directions (30 mins)</h2>
-<!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget risus vitae massa semper aliquam quis mattis quam adipiscing elit. Praesent eget risus vitae massa.</p> -->
-<ul class="listarrow">
-<li><i class="fa fa-angle-double-right"></i>Remaining limitations of current attack and defense techniques.</li>
-<li><i class="fa fa-angle-double-right"></i>Toward integrated, adaptive defenses and theoretical guarantees.</li>
-<li><i class="fa fa-angle-double-right"></i>Challenges in monitoring, watermarking, and architectural redesign.</li>
-<li><i class="fa fa-angle-double-right"></i>Open discussion: how can academia and industry jointly shape responsible LLM deployment?</li>
-</ul>
-</div>
-</div>
 
 <!--ADD some blank space between the contents-->
 <div style="height: 70px;"></div>
