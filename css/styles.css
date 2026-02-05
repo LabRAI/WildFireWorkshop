@@ -162,21 +162,21 @@ color: #48B1DF;
 }
 
 .time {
-  width: 250px;
-  font-weight: bold;
+  width: 240px;
+  font-weight: normal;
   color: #5A1C2A; /* 你之前的酒红色 */
   flex-shrink: 0;
   white-space: nowrap;   /* 禁止关键 */
 }
 
 .event {
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.5;
   flex: 1;   
 }
 
 .note {
-  font-size: 30px;
+  font-size: 20px;
   color: #555;
 }
 
