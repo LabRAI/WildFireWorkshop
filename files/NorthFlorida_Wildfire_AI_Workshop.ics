@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//North Florida Wildfire Workshop//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:wildfire-ai-workshop-20260313@fsu.edu
+DTSTAMP:20260209T190000Z
+DTSTART:20260313T140000Z
+DTEND:20260313T210000Z
+SUMMARY:The 1st North Florida Wildfire Science & Technology Workshop: Bridging Prediction, Infrastructure, and Decision-Making
+LOCATION:IGNITE Tallahassee, Multipurpose Room 103, 1729 W. Paul Dirac Drive, Tallahassee, FL 32310
+DESCRIPTION:This interdisciplinary workshop brings together AI researchers and wildfire scientists to discuss prediction, infrastructure, and decision-making. Topics include wildfire forecasting, spatiotemporal modeling, deep learning, LLMs, and stakeholder engagement.
+END:VEVENT
+END:VCALENDAR
