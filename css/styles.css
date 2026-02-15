@@ -140,7 +140,7 @@ color: #48B1DF;
 .schedule-timeline::before {
   content: '';
   position: absolute;
-  left: 120px;
+  left: 200px;
   top: 0;
   width: 3px;
   height: 100%;
@@ -157,15 +157,15 @@ color: #48B1DF;
 .timeline-time {
   position: absolute;
   left: 0;
-  width: 110px;
-  font-weight: 600;
+  width: 180px;
+  font-weight: 750;
   color: #881631;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .timeline-dot {
   position: absolute;
-  left: 112px;
+  left: 192px;
   top: 6px;
   width: 16px;
   height: 16px;
