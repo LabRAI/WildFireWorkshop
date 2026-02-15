@@ -140,7 +140,7 @@ color: #48B1DF;
 .schedule-timeline::before {
   content: '';
   position: absolute;
-  left: 250px;
+  left: 248.5px;
   top: 0;
   width: 3px;
   height: 100%;
