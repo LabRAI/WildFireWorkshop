@@ -150,23 +150,25 @@ color: #48B1DF;
 .timeline-item {
   position: relative;
   margin-bottom: 35px;
-  padding-left: 160px;
+  padding-left: 260px;
   text-align: left;
 }
 
 .timeline-time {
   position: absolute;
   left: 0;
+  top: 10px;
   width: 180px;
   font-weight: 750;
   color: #881631;
   font-size: 17px;
+  white-space: nowrap;
 }
 
 .timeline-dot {
   position: absolute;
   left: 192px;
-  top: 6px;
+  top: 14px;
   width: 16px;
   height: 16px;
   background: #41A2DA;
@@ -235,6 +237,7 @@ color: #48B1DF;
     left: 12px;
   }
 }
+
 
 /* .schedule-container {
   max-width: 850px;
