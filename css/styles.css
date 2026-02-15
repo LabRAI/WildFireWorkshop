@@ -140,7 +140,7 @@ color: #48B1DF;
 .schedule-timeline::before {
   content: '';
   position: absolute;
-  left: 200px;
+  left: 250px;
   top: 0;
   width: 3px;
   height: 100%;
@@ -150,14 +150,14 @@ color: #48B1DF;
 .timeline-item {
   position: relative;
   margin-bottom: 35px;
-  padding-left: 260px;
+  padding-left: 340px;
   text-align: left;
 }
 
 .timeline-time {
   position: absolute;
   left: 0;
-  top: 10px;
+  top: 16px;
   width: 180px;
   font-weight: 750;
   color: #881631;
@@ -167,7 +167,7 @@ color: #48B1DF;
 
 .timeline-dot {
   position: absolute;
-  left: 192px;
+  left: 242px;
   top: 14px;
   width: 16px;
   height: 16px;
@@ -179,7 +179,7 @@ color: #48B1DF;
 
 .timeline-content {
   background: #ffffff;
-  padding: 16px 20px;
+  padding: 12px 20px 16px 20px;
   border-radius: 10px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.05);
   transition: all 0.3s ease;
@@ -237,7 +237,6 @@ color: #48B1DF;
     left: 12px;
   }
 }
-
 
 /* .schedule-container {
   max-width: 850px;
