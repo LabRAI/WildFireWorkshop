@@ -383,6 +383,28 @@ ul.nostyle i {
   -webkit-animation-name: scaleIn;
   animation-name: scaleIn;
 }
+
+/* ===================== */
+/* Navbar Logo Styling   */
+/* ===================== */
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+}
+
+.nav-logo {
+  height: 40px;
+  margin-right: 15px;
+}
+
+.navbar {
+  background-color: #111 !important;
+  border: none;
+}
+
+
 .navbar-toggle{
 border-radius: 0;
 }
