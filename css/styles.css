@@ -395,14 +395,14 @@ ul.nostyle i {
 .navbar-brand {
   display: flex;
   align-items: center;
-  height: 90px;
+  height: 70px;
   padding: 0 15px;
 }
 
 /* logo图片 */
 .nav-logo {
   height: 50px;
-  margin-right: 20px;
+  margin-right: 15px;
 }
 
 .navbar-toggle{
