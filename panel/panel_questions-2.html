@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discussion Panels — 1st North Florida Wildfire Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --a-bg:        #080c18;
+    --a-blue:      #4a9eff;
+    --a-accent:    #e8621a;
+    --a-card-back: #0d1630;
+    --a-card-front:#0f1830;
+
+    --b-bg:        #120a06;
+    --b-ember:     #ff9a3c;
+    --b-accent:    #e85d1a;
+    --b-card-back: #1a0e06;
+    --b-card-front:#1e1008;
+  }
+
+  html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100%; scroll-behavior: smooth; }
+  body { height: 100%; font-family: 'Outfit', sans-serif; }
+
+  /* ── NAV ── */
+  .nav-dots { position: fixed; right: 28px; top: 50%; transform: translateY(-50%); z-index: 200; display: flex; flex-direction: column; gap: 14px; }
+  .nav-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); background: transparent; cursor: pointer; transition: all 0.3s; }
+  .nav-dot.active-a { background: #4a9eff; border-color: #4a9eff; box-shadow: 0 0 10px #4a9eff88; }
+  .nav-dot.active-b { background: #e85d1a; border-color: #e85d1a; box-shadow: 0 0 10px #e85d1a88; }
+
+  /* ── SCROLL HINT ── */
+  .scroll-hint { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: 0.38; animation: bob 2.2s ease-in-out infinite; cursor: pointer; }
+  .scroll-hint span { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .scroll-hint svg { width: 18px; height: 18px; }
+  @keyframes bob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(7px)} }
+
+  /* ── PANEL ── */
+  .panel { scroll-snap-align: start; height: 100vh; width: 100%; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+
+  canvas.particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.5; }
+
+  #panel-a { background: var(--a-bg); }
+  #panel-a::before { content:''; position: absolute; inset: 0; background-image: linear-gradient(rgba(74,158,255,0.032) 1px, transparent 1px), linear-gradient(90deg, rgba(74,158,255,0.032) 1px, transparent 1px); background-size: 52px 52px; pointer-events: none; }
+
+  #panel-b { background: var(--b-bg); }
+  #panel-b::before { content:''; position: absolute; inset: 0; background: radial-gradient(ellipse at 75% 25%, rgba(232,93,26,0.1) 0%, transparent 55%), radial-gradient(ellipse at 25% 75%, rgba(255,154,60,0.07) 0%, transparent 50%); pointer-events: none; }
+
+  /* ── INNER LAYOUT ── */
+  .panel-inner { position: relative; z-index: 2; height: 100%; display: grid; grid-template-rows: auto 1fr auto; padding: 28px 52px 20px 52px; max-width: 1400px; margin: 0 auto; width: 100%; opacity: 0; }
+  .panel-inner.visible { animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── HEADER ── */
+  .panel-label { font-family: 'DM Mono', monospace; font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 4px; }
+  #panel-a .panel-label { color: var(--a-blue); }
+  #panel-b .panel-label { color: var(--b-ember); }
+
+  .panel-title { font-family: 'DM Serif Display', serif; font-size: clamp(22px, 2.8vw, 38px); font-weight: 400; line-height: 1.15; margin-bottom: 9px; }
+  #panel-a .panel-title { color: #e8eaf0; }
+  #panel-b .panel-title { color: #f0ece8; }
+
+  .panelists-row { display: flex; flex-wrap: wrap; gap: 5px 14px; align-items: center; margin-top: 7px; }
+  .panelist-tag { font-size: 12.5px; font-weight: 500; padding: 2px 11px; border-radius: 20px; }
+  #panel-a .panelist-tag { background: rgba(74,158,255,0.08); border: 1px solid rgba(74,158,255,0.2); color: #98c4ff; }
+  #panel-b .panelist-tag { background: rgba(232,93,26,0.08); border: 1px solid rgba(232,93,26,0.22); color: #ffb07a; }
+
+  .divider { height: 1px; margin: 12px 0 14px 0; }
+  #panel-a .divider { background: linear-gradient(90deg, var(--a-blue), rgba(74,158,255,0.07), transparent); }
+  #panel-b .divider { background: linear-gradient(90deg, var(--b-accent), rgba(232,93,26,0.07), transparent); }
+
+  /* ── GRID ── */
+  .questions-grid { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(2,1fr); gap: 11px; min-height: 0; }
+
+  /* ── FLIP CARD ── */
+  /*
+    Approach: scaleX-based flip. No preserve-3d needed.
+    Phase 1 (flipping out): scaleX 1→0 on back face (0–0.22s)
+    Phase 2 (flipping in):  scaleX 0→1 on front face (0.22–0.44s)
+    JavaScript adds .flipped class on click.
+  */
+  .q-card {
+    position: relative;
+    border-radius: 10px;
+    cursor: pointer;
+    /* entrance animation */
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .q-card.card-visible { opacity: 1; transform: translateY(0); }
+
+  /* Both faces fill the full card */
+  .card-back,
+  .card-front {
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── BACK FACE (default: scaleX=1, visible) ── */
+  .card-back {
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transform-origin: center;
+    transform: scaleX(1);
+    transition: transform 0.2s ease-in, opacity 0.2s ease-in;
+    overflow: hidden;
+  }
+  /* When flipped: back squishes away */
+  .q-card.flipped .card-back {
+    transform: scaleX(0);
+    opacity: 0;
+    transition: transform 0.2s ease-in, opacity 0.1s ease-in;
+  }
+
+  /* ── FRONT FACE (default: scaleX=0, hidden) ── */
+  .card-front {
+    gap: 6px;
+    transform-origin: center;
+    transform: scaleX(0);
+    opacity: 0;
+    /* delayed so it only appears after back has gone away */
+    transition: transform 0.22s 0.18s ease-out, opacity 0.2s 0.18s ease-out;
+    overflow: hidden;
+  }
+  /* When flipped: front expands in */
+  .q-card.flipped .card-front {
+    transform: scaleX(1);
+    opacity: 1;
+    transition: transform 0.22s 0.18s ease-out, opacity 0.2s 0.18s ease-out;
+  }
+
+  /* ── BACK STYLES ── */
+  #panel-a .card-back { background: var(--a-card-back); border: 1px solid rgba(74,158,255,0.15); }
+  #panel-b .card-back { background: var(--b-card-back); border: 1px solid rgba(232,93,26,0.15); }
+
+  /* hover glow on back */
+  .q-card:not(.flipped):hover .card-back {
+    border-color: rgba(74,158,255,0.32);
+    box-shadow: 0 4px 26px rgba(74,158,255,0.1);
+  }
+  #panel-b .q-card:not(.flipped):hover .card-back {
+    border-color: rgba(232,93,26,0.35);
+    box-shadow: 0 4px 26px rgba(232,93,26,0.12);
+  }
+
+  .card-back::before {
+    content: ''; position: absolute; inset: 0; border-radius: 10px;
+    opacity: 0; transition: opacity 0.28s; pointer-events: none;
+  }
+  .q-card:not(.flipped):hover .card-back::before { opacity: 1; }
+  #panel-a .card-back::before { background: radial-gradient(ellipse at center, rgba(74,158,255,0.09), transparent 68%); }
+  #panel-b .card-back::before { background: radial-gradient(ellipse at center, rgba(232,93,26,0.1), transparent 68%); }
+
+  .hint-number { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; position: absolute; top: 13px; left: 15px; }
+  #panel-a .hint-number { color: rgba(74,158,255,0.35); }
+  #panel-b .hint-number { color: rgba(255,154,60,0.35); }
+
+  .hint-word { font-family: 'DM Serif Display', serif; font-size: clamp(22px, 2.1vw, 30px); font-weight: 400; text-align: center; line-height: 1.22; letter-spacing: -0.01em; position: relative; z-index: 1; }
+  #panel-a .hint-word { color: rgba(232,234,240,0.9); }
+  #panel-b .hint-word { color: rgba(240,236,232,0.9); }
+
+  .hint-sub { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; position: relative; z-index: 1; }
+  #panel-a .hint-sub { color: rgba(74,158,255,0.45); }
+  #panel-b .hint-sub { color: rgba(255,154,60,0.45); }
+
+  .tap-hint { position: absolute; bottom: 10px; right: 13px; font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0; transition: opacity 0.22s; }
+  .q-card:not(.flipped):hover .tap-hint { opacity: 1; }
+  #panel-a .tap-hint { color: rgba(74,158,255,0.5); }
+  #panel-b .tap-hint { color: rgba(255,154,60,0.5); }
+
+  /* ── FRONT STYLES ── */
+  #panel-a .card-front { background: var(--a-card-front); border: 1px solid rgba(74,158,255,0.24); }
+  #panel-b .card-front { background: var(--b-card-front); border: 1px solid rgba(232,93,26,0.26); }
+
+  .front-number { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; }
+  #panel-a .front-number { color: var(--a-accent); }
+  #panel-b .front-number { color: var(--b-ember); }
+
+  .front-headline { font-family: 'DM Serif Display', serif; font-size: clamp(13px, 1.05vw, 15px); font-weight: 400; line-height: 1.3; letter-spacing: -0.01em; margin-top: 4px; }
+  #panel-a .front-headline { color: #dde2f0; }
+  #panel-b .front-headline { color: #ede8e0; }
+
+  .front-body { font-family: 'Outfit', sans-serif; font-size: clamp(10px, 0.8vw, 12px); font-weight: 300; line-height: 1.6; flex: 1; margin-top: 6px; }
+  #panel-a .front-body { color: #7a8499; }
+  #panel-b .front-body { color: #9a8878; }
+
+  .front-note { font-family: 'DM Mono', monospace; font-size: 8.5px; letter-spacing: 0.07em; padding-top: 6px; border-top-width: 1px; border-top-style: solid; line-height: 1.5; margin-top: 4px; }
+  #panel-a .front-note { color: rgba(74,158,255,0.42); border-top-color: rgba(74,158,255,0.1); }
+  #panel-b .front-note { color: rgba(255,154,60,0.42); border-top-color: rgba(232,93,26,0.1); }
+
+  /* ── FOOTER ── */
+  .panel-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 9px; font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; opacity: 0.25; }
+  #panel-a .panel-footer { color: #e8eaf0; }
+  #panel-b .panel-footer { color: #f0ece8; }
+</style>
+</head>
+<body>
+
+<nav class="nav-dots">
+  <div class="nav-dot active-a" onclick="scrollToPanel(0)"></div>
+  <div class="nav-dot" onclick="scrollToPanel(1)"></div>
+</nav>
+
+<!-- ══════════════ PANEL A ══════════════ -->
+<section class="panel" id="panel-a">
+  <canvas class="particles" id="canvas-a"></canvas>
+  <div class="panel-inner" id="inner-a">
+    <header>
+      <p class="panel-label">Panel A &nbsp;·&nbsp; Discussion Questions</p>
+      <h1 class="panel-title">Wildfire Science &amp;<br>Predictive Modeling</h1>
+      <div class="panelists-row">
+        <span class="panelist-tag">Ilkay Altintas &nbsp;·&nbsp; UC San Diego</span>
+        <span class="panelist-tag">Neda Yaghoobian &nbsp;·&nbsp; Florida State University</span>
+        <span class="panelist-tag">Morgan Varner &nbsp;·&nbsp; Tall Timbers</span>
+      </div>
+      <div class="divider"></div>
+    </header>
+
+    <div class="questions-grid">
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 01</span>
+          <div class="hint-word">Your Piece<br>of the Chain</div>
+          <div class="hint-sub">Role &amp; Domain</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 01</div>
+          <div class="front-headline">What specific piece of the wildfire prediction chain does your work address?</div>
+          <div class="front-body">You each approach wildfire from a fundamentally different angle — AI and data systems, atmospheric fluid dynamics, and fire ecology. What is the specific piece of the wildfire prediction chain that your work addresses?</div>
+          <div class="front-note">Opens the panel with clear positioning. Each panelist introduces their domain without overlap.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 02</span>
+          <div class="hint-word">North<br>Florida</div>
+          <div class="hint-sub">Local Context</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 02</div>
+          <div class="front-headline">How does North Florida's specific character shape your research?</div>
+          <div class="front-body">North Florida's wildfire environment — its humid climate, longleaf pine ecosystem, and deeply ingrained prescribed burn culture — is fundamentally different from the western U.S. or Mediterranean regions. How does this region's specific character shape your methods, data needs, or assumptions?</div>
+          <div class="front-note">Grounds the panel in the local context. Signals North Florida as a scientifically distinct environment.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 03</span>
+          <div class="hint-word">Error &amp;<br>Noise</div>
+          <div class="hint-sub">Uncertainty</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 03</div>
+          <div class="front-headline">How do errors resulting from uncertainty affect your predictions?</div>
+          <div class="front-body">In your research, where does uncertainty primarily come from — insufficient input data, inherent unpredictability in physical or ecological processes, or both? How do you quantify, manage, or communicate the errors that result?</div>
+          <div class="front-note">A technically rich question each panelist answers from their own domain. Reveals the honest limits of current science.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 04</span>
+          <div class="hint-word">Human<br>Footprint</div>
+          <div class="hint-sub">Land Use &amp; Activity</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 04</div>
+          <div class="front-headline">How do human activities alter the landscape your models rely on?</div>
+          <div class="front-body">Human activities — such as prescribed burning, land-use change, and urban expansion — continuously reshape fuel structure, fire behavior patterns, and the historical record that models are trained on. How does your research account for and adapt to these ongoing changes?</div>
+          <div class="front-note">Broadens the question to human land management at large. Relevant across all three panelists' domains.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 05</span>
+          <div class="hint-word">AI's Edge —<br>and Its Limits</div>
+          <div class="hint-sub">Promise vs. Hype</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 05</div>
+          <div class="front-headline">What has AI made newly possible — and what do you worry it's oversimplifying?</div>
+          <div class="front-body">Large-scale remote sensing and AI have made some previously unanswerable questions tractable. What is one question your field can now begin to answer that it couldn't five years ago — and is there anything you worry is being oversimplified by the current wave of AI enthusiasm?</div>
+          <div class="front-note">Celebrates genuine progress while naming what could be lost. Directly relevant to AI researchers and students in the room.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 06</span>
+          <div class="hint-word">The Missing<br>Research</div>
+          <div class="hint-sub">What's Needed Next</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 06</div>
+          <div class="front-headline">What is the most underinvested research direction in wildfire science right now?</div>
+          <div class="front-body">For the graduate students and early-career researchers in this room working at the intersection of AI, remote sensing, and wildfire science — what is the most underinvested research direction you see right now, and why does it matter?</div>
+          <div class="front-note">Turns expertise into actionable guidance. Each panelist names specific research gaps in their domain.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="panel-footer">
+      <span>1st North Florida Wildfire Science &amp; Technology Workshop &nbsp;·&nbsp; March 13, 2026</span>
+      <span>IGNITE Tallahassee &nbsp;·&nbsp; 3:30 PM</span>
+    </footer>
+  </div>
+  <div class="scroll-hint" onclick="scrollToPanel(1)" style="color:#7a8099;">
+    <span>Panel B</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- ══════════════ PANEL B ══════════════ -->
+<section class="panel" id="panel-b">
+  <canvas class="particles" id="canvas-b"></canvas>
+  <div class="panel-inner" id="inner-b">
+    <header>
+      <p class="panel-label">Panel B &nbsp;·&nbsp; Discussion Questions</p>
+      <h1 class="panel-title">Response, Planning &amp;<br>Decision-Making</h1>
+      <div class="panelists-row">
+        <span class="panelist-tag">Xilei Zhao &nbsp;·&nbsp; University of Florida</span>
+        <span class="panelist-tag">Divina Lade &nbsp;·&nbsp; Apalachee Regional Planning Council</span>
+        <span class="panelist-tag">Donald Johnson Jr. &nbsp;·&nbsp; Tallahassee Fire Department</span>
+      </div>
+      <div class="divider"></div>
+    </header>
+
+    <div class="questions-grid">
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 01</span>
+          <div class="hint-word">Your Stage<br>in the Response</div>
+          <div class="hint-sub">Before / During / After</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 01</div>
+          <div class="front-headline">What stage of wildfire response is most central to your work?</div>
+          <div class="front-body">Whether you focus on pre-event planning, real-time decision-making, or post-incident recovery — which stage do you work in most closely, and what kinds of decisions or actions does that involve?</div>
+          <div class="front-note">Grounds each panelist's role in the response timeline. Sets up all subsequent questions with a shared sense of where each person stands.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 02</span>
+          <div class="hint-word">Hard<br>to Get</div>
+          <div class="hint-sub">Data &amp; Information Gaps</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 02</div>
+          <div class="front-headline">What information is typically missing or difficult to obtain when you need it most?</div>
+          <div class="front-body">In your day-to-day work, what information or data do you rely on most — where does it come from, how reliable is it, and what is typically missing or difficult to obtain when it matters?</div>
+          <div class="front-note">Surfaces the real information gaps practitioners face. Directly useful to researchers who may not know what is operationally missing.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 03</span>
+          <div class="hint-word">Can't<br>Use It</div>
+          <div class="hint-sub">Science → Practice Gap</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 03</div>
+          <div class="front-headline">What research outputs or tools — such as AI models — have been difficult to translate into operational use?</div>
+          <div class="front-body">Research regularly produces tools, models, and findings intended to support decision-making in the field. Where have these fallen short in practice — whether due to format, timing, accessibility, or how uncertainty is communicated?</div>
+          <div class="front-note">Directly addresses the science-to-practice gap at the core of this workshop. Invites candid answers about where the bridge breaks down.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 04</span>
+          <div class="hint-word">This Place,<br>These Rules</div>
+          <div class="hint-sub">Region-Specific Context</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 04</div>
+          <div class="front-headline">What aspects of this region's wildfire context require approaches developed specifically for it?</div>
+          <div class="front-body">North Florida has one of the most active prescribed burn cultures in the country, a multi-county regional planning structure, and a Wildland-Urban Interface that differs substantially from California or the Pacific Northwest. What aspects of your work here cannot be directly informed by frameworks or methods developed for other regions?</div>
+          <div class="front-note">Localizes the panel. Draws on knowledge only practitioners embedded in this region would have.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 05</span>
+          <div class="hint-word">Left<br>Behind</div>
+          <div class="hint-sub">Equity &amp; Access</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 05</div>
+          <div class="front-headline">Where does the system currently fail the people most at risk?</div>
+          <div class="front-body">Wildfire evacuation and emergency response are not equally accessible to everyone. In your specific work — whether modeling evacuation behavior, planning across nine counties, or coordinating first response — where does the system fall short for people with less mobility, fewer resources, or less access to information?</div>
+          <div class="front-note">Brings an equity lens in a concrete, experience-grounded way. Each panelist names a different dimension of the gap.</div>
+        </div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-back">
+          <span class="hint-number">Q 06</span>
+          <div class="hint-word">Build<br>This Instead</div>
+          <div class="hint-sub">Feedback to Researchers</div>
+          <span class="tap-hint">click to reveal</span>
+        </div>
+        <div class="card-front">
+          <div class="front-number">Question 06</div>
+          <div class="front-headline">What should researchers stop building — and what would actually change your work?</div>
+          <div class="front-body">Speaking directly to the researchers in this room: what is one thing the research community keeps building that doesn't actually help you — and what is one thing that, if someone built it well, would immediately change how you work?</div>
+          <div class="front-note">The most pointed question of the workshop. Lets practitioners give unfiltered feedback to researchers — the perfect closing for a Bridging-themed session.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="panel-footer">
+      <span>1st North Florida Wildfire Science &amp; Technology Workshop &nbsp;·&nbsp; March 13, 2026</span>
+      <span>IGNITE Tallahassee &nbsp;·&nbsp; 3:30 PM</span>
+    </footer>
+  </div>
+</section>
+
+<script>
+// ── PARTICLES ─────────────────────────────────────────────
+function initParticles(id, type) {
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext('2d');
+  let W, H, pts = [];
+  function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+  const n = type==='a' ? 50 : 65;
+  for (let i=0; i<n; i++) pts.push(make());
+  function make() {
+    return { x: Math.random()*(W||1200), y: Math.random()*(H||800),
+      r: Math.random()*(type==='a'?1.7:2.1)+0.3,
+      vx: (Math.random()-0.5)*(type==='a'?0.15:0.1),
+      vy: -(Math.random()*(type==='a'?0.27:0.44)+0.06),
+      a: Math.random()*0.55+0.1, f: Math.random()*Math.PI*2,
+      fs: Math.random()*0.026+0.007,
+      h: type==='a' ? Math.random()*40+200 : Math.random()*30+12 };
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    pts.forEach((p,i) => {
+      p.x+=p.vx; p.y+=p.vy; p.f+=p.fs;
+      const fl = Math.sin(p.f)*0.22+0.78;
+      if(p.y<-8){pts[i]=make();pts[i].y=H+4;}
+      if(p.x<-8)p.x=W+4; if(p.x>W+8)p.x=-4;
+      const c = `hsla(${p.h},80%,68%,${p.a*fl})`;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*fl,0,Math.PI*2);
+      ctx.fillStyle=c; ctx.shadowColor=c; ctx.shadowBlur=type==='a'?5:9;
+      ctx.fill(); ctx.shadowBlur=0;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+initParticles('canvas-a','a');
+initParticles('canvas-b','b');
+
+// ── NAV & SCROLL ──────────────────────────────────────────
+const panels = document.querySelectorAll('.panel');
+const dots   = document.querySelectorAll('.nav-dot');
+function scrollToPanel(i) { panels[i].scrollIntoView({behavior:'smooth'}); }
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    const idx   = Array.from(panels).indexOf(e.target);
+    const inner = e.target.querySelector('.panel-inner');
+    const cards = e.target.querySelectorAll('.q-card');
+    if (e.isIntersecting) {
+      dots.forEach(d => d.classList.remove('active-a','active-b'));
+      dots[idx].classList.add(idx===0 ? 'active-a' : 'active-b');
+      inner.classList.add('visible');
+      cards.forEach((c,i) => setTimeout(() => c.classList.add('card-visible'), 160+i*60));
+    } else {
+      inner.classList.remove('visible');
+      cards.forEach(c => c.classList.remove('card-visible','flipped'));
+    }
+  });
+}, { threshold: 0.4 });
+
+panels.forEach(p => obs.observe(p));
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowDown'||e.key==='PageDown') scrollToPanel(1);
+  if (e.key==='ArrowUp'||e.key==='PageUp') scrollToPanel(0);
+});
+</script>
+</body>
+</html>
