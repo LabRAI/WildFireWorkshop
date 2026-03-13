@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Florida Wildfire Workshop</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #E8620A;
+      --amber:  #F5A623;
+      --cream:  #FAF3E0;
+      --dark:   #1A1007;
+      --char:   #22140A;
+      --muted:  rgba(250,243,224,0.70);
+      --faint:  rgba(250,243,224,0.45);
+    }
+
+    html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100%; }
+    body { height: 100%; font-family: 'Georgia', serif; background: var(--dark); color: var(--cream); }
+
+    /* ── SLIDE BASE ── */
+    .slide {
+      scroll-snap-align: start; scroll-snap-stop: always;
+      min-height: 100vh; width: 100%;
+      position: relative; display: flex; flex-direction: column;
+      justify-content: center; overflow: hidden;
+    }
+    .slide::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: var(--char);
+    }
+    #s1::before { display: none; }
+
+    .accent-bar {
+      position: absolute; top: 0; left: 0;
+      width: 6px; height: 100%; z-index: 2;
+      background: linear-gradient(to bottom, var(--orange), var(--amber));
+    }
+
+    /* slide number badge — sits above source bar */
+    .slide-badge {
+      position: absolute; bottom: 46px; right: 32px; z-index: 5;
+      font-size: 0.7rem; letter-spacing: 0.12em;
+      color: rgba(250,243,224,0.25); font-family: monospace;
+    }
+
+    /* ── SOURCE BAR ── */
+    .src-bar {
+      position: absolute; bottom: 0; left: 6px; right: 0; z-index: 4;
+      padding: 6px calc(7vw + 14px) 7px;
+      border-top: 1px solid rgba(250,243,224,0.07);
+      background: rgba(0,0,0,0.25);
+      font-family: sans-serif;
+      font-size: 0.6rem;
+      line-height: 1.55;
+      color: rgba(250,243,224,0.30);
+      letter-spacing: 0.01em;
+    }
+    .src-bar strong {
+      color: rgba(250,243,224,0.42);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    /* inline reference superscripts */
+    sup.ref {
+      font-size: 0.62em;
+      color: var(--amber);
+      opacity: 0.75;
+      vertical-align: super;
+      line-height: 0;
+      font-family: sans-serif;
+    }
+
+    /* ══ SLIDE 1 — HERO ══ */
+    #s1 { padding: 0; }
+    #s1 .bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: url('figs/first page.png') center/cover no-repeat;
+    }
+    #s1 .bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(26,16,7,0.7) 0%, rgba(26,16,7,0.1) 55%);
+    }
+    #s1 .hero-label {
+      position: relative; z-index: 1;
+      width: 100%; padding: 48px 8vw 64px;
+      text-align: center; margin-top: auto;
+    }
+    #s1 h1 {
+      font-size: clamp(1.9rem, 4.2vw, 3.5rem);
+      font-weight: 700; letter-spacing: 0.02em;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.9); line-height: 1.2;
+    }
+    #s1 .hero-label > p {
+      margin-top: 14px; font-size: clamp(0.95rem, 1.9vw, 1.35rem);
+      opacity: 0.88; text-shadow: 0 1px 10px rgba(0,0,0,0.75);
+    }
+    #s1 .hero-meta {
+      margin-top: 28px;
+      display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+    }
+    #s1 .hero-meta span {
+      font-size: clamp(0.78rem, 1.2vw, 0.98rem);
+      color: var(--amber); text-shadow: 0 1px 8px rgba(0,0,0,0.7);
+      letter-spacing: 0.07em;
+    }
+    #s1 .scroll-hint {
+      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 5px;
+      opacity: 0.6; animation: bounce 2.2s infinite;
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    #s1 .scroll-hint svg { width: 22px; height: 22px; fill: var(--cream); }
+    @keyframes bounce {
+      0%,100%{ transform: translateX(-50%) translateY(0); }
+      50%    { transform: translateX(-50%) translateY(9px); }
+    }
+
+    /* ══ SLIDE BODY ══ */
+    .slide-body {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center; gap: 36px;
+      width: 100%;
+      padding: 48px 7vw 52px calc(7vw + 14px);
+      min-height: calc(100vh - 36px); /* leave room for src-bar */
+    }
+    .slide-body.full  { grid-template-columns: 1fr; }
+    .slide-body.wide  { grid-template-columns: 58% 42%; }
+    .slide-body.narrow{ grid-template-columns: 42% 58%; }
+
+    .slide-text { display: flex; flex-direction: column; gap: 0; }
+    .slide-num {
+      font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 11px; opacity: 0.75;
+    }
+    .slide h2 {
+      font-size: clamp(1.4rem, 2.8vw, 2.3rem);
+      font-weight: 700; line-height: 1.25; margin-bottom: 22px;
+    }
+    .slide h2 em { font-style: normal; color: var(--amber); }
+
+    .slide-img { display: flex; align-items: center; justify-content: center; height: 100%; }
+    .slide-img img {
+      width: 100%; max-height: 66vh; object-fit: contain;
+      border-radius: 10px; box-shadow: 0 8px 40px rgba(0,0,0,0.65);
+      border: 1px solid rgba(245,166,35,0.22);
+    }
+    .presenter-photo {
+      width: 240px; height: 240px; border-radius: 50%;
+      object-fit: cover; object-position: center top;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.65);
+      border: 3px solid rgba(245,166,35,0.45);
+    }
+
+    /* ── STAT CARDS ── */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+    .stat-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+    .stat-card { background: rgba(232,98,10,0.09); border: 1px solid rgba(232,98,10,0.28); border-radius: 8px; padding: 13px 15px; }
+    .stat-card .n { font-size: clamp(1.25rem, 2.3vw, 1.75rem); font-weight: 700; color: var(--amber); line-height: 1.1; margin-bottom: 4px; }
+    .stat-card .l { font-size: clamp(0.73rem, 1.05vw, 0.86rem); color: var(--muted); line-height: 1.4; }
+
+    /* ── BULLET / NUMBERED LIST ── */
+    .blist { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .blist li { font-size: clamp(0.92rem, 1.5vw, 1.08rem); padding-left: 1.4em; position: relative; line-height: 1.55; }
+    .blist li::before { content: '▸'; position: absolute; left: 0; color: var(--orange); }
+    .blist li strong { color: var(--amber); font-weight: normal; }
+
+    .nlist { list-style: none; display: flex; flex-direction: column; gap: 11px; counter-reset: nl; }
+    .nlist li { font-size: clamp(0.92rem, 1.5vw, 1.08rem); padding-left: 2em; position: relative; line-height: 1.55; counter-increment: nl; }
+    .nlist li::before { content: counter(nl) '.'; position: absolute; left: 0; color: var(--orange); font-weight: 700; }
+
+    /* ── CALLOUT BOX ── */
+    .callout {
+      margin-top: 16px; padding: 13px 17px;
+      background: rgba(245,166,35,0.08); border-left: 3px solid var(--amber);
+      border-radius: 0 6px 6px 0;
+      font-size: clamp(0.83rem, 1.25vw, 0.96rem); color: var(--muted); line-height: 1.65;
+    }
+    .callout strong { color: var(--amber); }
+
+    /* ── DROUGHT SCALE ── */
+    .drought-scale { margin-bottom: 16px; }
+    .drought-row { display: grid; grid-template-columns: 140px 58px 1fr; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(250,243,224,0.06); font-size: clamp(0.78rem, 1.15vw, 0.88rem); }
+    .drought-row:last-child { border-bottom: none; }
+    .d-label { color: var(--muted); }
+    .d-pct { color: var(--amber); font-weight: 700; font-family: monospace; font-size: 0.98rem; text-align: right; }
+    .d-bar-wrap { height: 8px; background: rgba(250,243,224,0.08); border-radius: 4px; overflow: hidden; }
+    .d-bar { height: 100%; border-radius: 4px; }
+
+    /* ── FEATURE CARDS ── */
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .feature-card { background: rgba(232,98,10,0.08); border: 1px solid rgba(232,98,10,0.22); border-radius: 8px; padding: 13px 15px; }
+    .feature-card .fc-title { font-size: clamp(0.86rem, 1.25vw, 0.98rem); color: var(--amber); font-weight: 700; margin-bottom: 5px; }
+    .feature-card .fc-body { font-size: clamp(0.76rem, 1.1vw, 0.88rem); color: var(--muted); line-height: 1.5; }
+
+    /* ── PROCESS STEPS ── */
+    .process-steps { display: flex; flex-direction: column; gap: 0; }
+    .process-step { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid rgba(250,243,224,0.06); }
+    .process-step:last-child { border-bottom: none; }
+    .ps-num { width: 34px; height: 34px; border-radius: 50%; background: rgba(232,98,10,0.16); border: 1px solid var(--orange); display: flex; align-items: center; justify-content: center; font-size: 0.88rem; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+    .ps-content .ps-title { font-size: clamp(0.88rem, 1.35vw, 1rem); color: var(--cream); font-weight: 700; margin-bottom: 2px; }
+    .ps-content .ps-desc { font-size: clamp(0.76rem, 1.08vw, 0.86rem); color: var(--faint); line-height: 1.5; }
+
+    /* ── MOTIVATION SLIDES ── */
+    .mot-sub { font-size: clamp(0.9rem, 1.45vw, 1.05rem); color: var(--muted); line-height: 1.75; margin-bottom: 20px; margin-top: 8px; }
+    .mot-bridge { font-size: 0.72rem; color: var(--orange); letter-spacing: 0.1em; text-transform: uppercase; font-family: monospace; padding-top: 12px; border-top: 1px solid rgba(232,98,10,0.22); }
+
+    /* ── AGENDA SLIDE ── */
+    #s17 .slide-body { grid-template-columns: 1fr; padding: 44px 7vw 52px calc(7vw + 14px); align-content: center; }
+    #s17 h2 { margin-bottom: 26px; }
+    .schedule { display: flex; flex-direction: column; border-left: 2px solid rgba(232,98,10,0.32); }
+    .schedule-row { display: grid; grid-template-columns: 185px 1fr; position: relative; }
+    .schedule-row + .schedule-row { border-top: 1px solid rgba(250,243,224,0.06); }
+    .schedule-row::before { content: ''; position: absolute; left: -7px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; border-radius: 50%; background: var(--char); border: 2px solid var(--orange); z-index: 1; }
+    .schedule-row.brk::before { border-color: rgba(245,166,35,0.35); }
+    .schedule-row.hi::before  { background: var(--orange); }
+    .sch-time { padding: 12px 14px 12px 20px; font-size: 0.78rem; letter-spacing: 0.04em; color: var(--amber); font-family: monospace; font-weight: 700; white-space: nowrap; line-height: 1.4; }
+    .sch-desc { padding: 12px 14px; font-size: clamp(0.83rem, 1.25vw, 0.96rem); line-height: 1.5; }
+    .sch-desc strong { color: var(--amber); }
+    .schedule-row.brk .sch-desc { color: var(--faint); font-style: italic; }
+    .schedule-row.hi  .sch-desc { font-weight: 600; }
+
+    /* ── CLOSING SLIDE ── */
+    #s21 .slide-body { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    #s21 .slide-text { align-items: center; }
+    .tag-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 30px; }
+    .tag { padding: 9px 22px; border: 1px solid var(--orange); border-radius: 100px; font-size: 0.98rem; color: var(--amber); }
+    .closing-quote { font-size: clamp(0.96rem, 1.62vw, 1.13rem); line-height: 1.9; color: var(--muted); max-width: 560px; }
+
+    /* ── TALK PREVIEW SLIDES ── */
+    .talk-header { margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid rgba(250,243,224,0.12); }
+    .talk-badge { display: inline-block; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--orange); font-family: monospace; font-weight: 700; margin-bottom: 6px; }
+    .talk-speaker { font-size: clamp(1.05rem, 1.7vw, 1.35rem); color: var(--cream); font-weight: 700; margin: 0 0 2px; line-height: 1.2; }
+    .talk-inst { font-size: 0.74rem; color: var(--muted); letter-spacing: 0.04em; }
+    .talk-title { font-size: clamp(0.78rem, 1.1vw, 0.92rem); color: var(--amber); font-style: italic; line-height: 1.5; margin-top: 6px; }
+    .hook-line { font-size: clamp(1rem, 1.7vw, 1.35rem); color: var(--cream); font-weight: 700; line-height: 1.4; margin-bottom: 18px; }
+    .hook-line em { color: var(--amber); font-style: normal; }
+    .talk-bullets { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .talk-bullets li { font-size: clamp(0.78rem, 1.05vw, 0.88rem); color: var(--muted); line-height: 1.5; padding-left: 14px; position: relative; }
+    .talk-bullets li::before { content: '—'; position: absolute; left: 0; color: var(--orange); }
+    .talk-bullets li strong { color: var(--cream); }
+
+    /* ── PROBLEM CHAIN (s9) ── */
+    .prob-chain { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+    .prob-item { display: grid; grid-template-columns: 28px 1fr auto; gap: 14px; align-items: center; background: rgba(250,243,224,0.04); border-left: 3px solid var(--orange); padding: 10px 16px; border-radius: 0 5px 5px 0; }
+    .prob-num { font-size: 1.1rem; font-weight: 700; color: var(--orange); font-family: monospace; }
+    .prob-text { font-size: clamp(0.78rem, 1.05vw, 0.88rem); color: var(--cream); line-height: 1.4; }
+    .prob-text strong { color: var(--amber); }
+    .prob-tag { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); white-space: nowrap; opacity: 0.7; font-family: monospace; }
+
+    /* ── PANEL LAYOUT (s15) ── */
+    .panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 14px; }
+    .panel-block { background: rgba(250,243,224,0.04); border-radius: 8px; padding: 20px 24px; }
+    .panel-label { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber); font-family: monospace; margin-bottom: 8px; }
+    .panel-title { font-size: clamp(1rem, 1.6vw, 1.25rem); font-weight: 700; color: var(--cream); margin-bottom: 14px; border-bottom: 1px solid rgba(232,98,10,0.25); padding-bottom: 10px; }
+    .panelist { margin-bottom: 10px; }
+    .panelist-name { font-size: clamp(0.95rem, 1.4vw, 1.1rem); color: var(--cream); font-weight: 600; }
+    .panelist-affil { font-size: clamp(0.78rem, 1vw, 0.88rem); color: var(--faint); margin-top: 2px; line-height: 1.4; }
+
+    /* ── AGENDA KEY QUESTION ── */
+    .sch-q { font-size: 0.7rem; color: var(--amber); font-style: italic; opacity: 0.85; margin-top: 2px; }
+
+    /* ── NAV DOTS ── */
+    .nav-dots { position: fixed; right: 18px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 999; }
+    .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(250,243,224,0.22); cursor: pointer; transition: background 0.25s, transform 0.25s; border: none; }
+    .nav-dot.active { background: var(--amber); transform: scale(1.45); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 720px) {
+      .slide-body { grid-template-columns: 1fr !important; gap: 20px; padding: 40px 6vw 52px 8vw; }
+      .slide-img  { display: none; }
+      .stat-grid  { grid-template-columns: 1fr 1fr; }
+      .schedule-row { grid-template-columns: 110px 1fr; }
+      .src-bar { padding: 6px 6vw; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="nav-dots" aria-label="Slides">
+  <button class="nav-dot active" data-target="s1"  title="1"></button>
+  <button class="nav-dot"        data-target="s2"  title="2"></button>
+  <button class="nav-dot"        data-target="s3"  title="3"></button>
+  <button class="nav-dot"        data-target="s4"  title="4"></button>
+  <button class="nav-dot"        data-target="s5"  title="5"></button>
+  <button class="nav-dot"        data-target="s6"  title="6"></button>
+  <button class="nav-dot"        data-target="s7"  title="7"></button>
+  <button class="nav-dot"        data-target="s8"  title="8"></button>
+  <button class="nav-dot"        data-target="s9"  title="9"></button>
+  <button class="nav-dot"        data-target="s10" title="10"></button>
+  <button class="nav-dot"        data-target="s11" title="11"></button>
+  <button class="nav-dot"        data-target="s12" title="12"></button>
+  <button class="nav-dot"        data-target="s13" title="13"></button>
+  <button class="nav-dot"        data-target="s14" title="14"></button>
+  <button class="nav-dot"        data-target="s15" title="15"></button>
+  <button class="nav-dot"        data-target="s16" title="16"></button>
+  <button class="nav-dot"        data-target="s17" title="17"></button>
+  <button class="nav-dot"        data-target="s18" title="18"></button>
+</nav>
+
+
+<!-- ════════ S1 — HERO ════════ -->
+<section class="slide" id="s1">
+  <div class="bg"></div>
+  <div style="flex:1;"></div>
+  <div class="hero-label">
+    <h1>The 1st North Florida Wildfire<br/>Science &amp; Technology Workshop</h1>
+    <p>Bridging Prediction, Infrastructure, and Decision-Making</p>
+    <div class="hero-meta">
+      <span>Friday, March 13 · 2026</span>
+      <span>10:00 AM – 5:00 PM (ET)</span>
+      <span>IGNITE Tallahassee</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <svg viewBox="0 0 24 24"><path d="M12 16l-6-6h12z"/></svg>
+    Scroll
+  </div>
+  <div class="slide-badge">1 / 18</div>
+</section>
+
+
+<!-- ════════ S2 — Global & U.S. Wildfire Crisis ════════ -->
+<section class="slide" id="s2">
+  <div class="accent-bar"></div>
+  <div class="slide-body wide">
+    <div class="slide-text">
+      <p class="slide-num">Slide 2</p>
+      <h2>Wildfires: A Growing<br/><em>Global &amp; National Crisis</em></h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="n">~70,000<sup class="ref">[1]</sup></div>
+          <div class="l">wildfires per year in the United States</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">7–10 M<sup class="ref">[1]</sup></div>
+          <div class="l">acres burned annually across the U.S.</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">$394 B+<sup class="ref">[2]</sup></div>
+          <div class="l">estimated annual economic cost — up to 4% of GDP</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">+78 days<sup class="ref">[3]</sup></div>
+          <div class="l">longer wildfire season in the West since the 1970s</div>
+        </div>
+      </div>
+      <ul class="blist">
+        <li>2025 Los Angeles fires: <strong>$250–275 billion</strong> in damage — costliest wildfire disaster in U.S. history<sup class="ref">[4]</sup></li>
+        <li>2023 Canada: <strong>18 million hectares</strong> burned — worst season on record<sup class="ref">[5]</sup></li>
+        <li>By 2050, area burned on U.S. National Forests projected to <strong>nearly double</strong><sup class="ref">[3]</sup></li>
+        <li>Wildfire smoke now regularly degrades air quality across <strong>entire continents</strong><sup class="ref">[6]</sup></li>
+      </ul>
+    </div>
+    <div class="slide-img">
+      <img src="figs/supplycache-305032-wildfirescenery-BlogBanner1.jpg" alt="Wildfire scenery" />
+    </div>
+  </div>
+  <div class="src-bar">
+    <strong>Sources:</strong>
+    [1] National Interagency Fire Center (NIFC), nifc.gov &nbsp;·&nbsp;
+    [2] U.S. Joint Economic Committee, "Climate-Exacerbated Wildfires," Oct 2023 &nbsp;·&nbsp;
+    [3] USDA Forest Service wildfire cost &amp; area projections &nbsp;·&nbsp;
+    [4] AccuWeather / Reuters economic damage estimates, Jan 2025 &nbsp;·&nbsp;
+    [5] Canadian Interagency Forest Fire Centre (CIFFC), 2023 Annual Report &nbsp;·&nbsp;
+    [6] U.S. EPA / NOAA air quality monitoring data
+  </div>
+  <div class="slide-badge">2 / 18</div>
+</section>
+
+
+<!-- ════════ S3 — Florida: Worst Drought in 25 Years ════════ -->
+<section class="slide" id="s3">
+  <div class="accent-bar"></div>
+  <div class="slide-body wide">
+    <div class="slide-text">
+      <p class="slide-num">Slide 3</p>
+      <h2>Florida Is Facing Its Worst<br/><em>Drought in 25 Years</em></h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="n">100%<sup class="ref">[1]</sup></div>
+          <div class="l">of Florida currently in drought conditions</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">70.5%<sup class="ref">[1]</sup></div>
+          <div class="l">of the state in Extreme Drought (D3)</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">18.6 M<sup class="ref">[1]</sup></div>
+          <div class="l">Florida residents in drought-affected areas</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">20th driest<sup class="ref">[2]</sup></div>
+          <div class="l">January on record since 1895 — 1.61" below normal</div>
+        </div>
+      </div>
+      <ul class="blist" style="margin-top:4px;">
+        <li><strong>1,249 wildfires</strong> in Florida in the first 10 weeks of 2026<sup class="ref">[3]</sup></li>
+        <li><strong>77,162 acres</strong> already burned — state and federal lands combined<sup class="ref">[3]</sup></li>
+        <li>Multiple counties under active burn bans<sup class="ref">[3]</sup></li>
+        <li>Above-normal wildfire risk projected through <strong>at least May 2026</strong><sup class="ref">[4]</sup></li>
+      </ul>
+    </div>
+    <div class="slide-img">
+      <img src="figs/wildfire danger post from florida forest service.png" alt="Florida wildfire danger post" />
+    </div>
+  </div>
+  <div class="src-bar">
+    <strong>Sources:</strong>
+    [1] U.S. Drought Monitor (NOAA / USDA), drought.gov, March 2026 &nbsp;·&nbsp;
+    [2] NOAA National Centers for Environmental Information (NCEI), January 2026 statewide climate report &nbsp;·&nbsp;
+    [3] Florida Dept. of Agriculture &amp; Consumer Services / Florida Forest Service, fdacs.gov, 2026 YTD &nbsp;·&nbsp;
+    [4] NIFC Significant Wildland Fire Potential Outlook, March 2026
+  </div>
+  <div class="slide-badge">3 / 18</div>
+</section>
+
+
+<!-- ════════ S4 — The Florida Wildfire Paradox ════════ -->
+<section class="slide" id="s4">
+  <div class="accent-bar"></div>
+  <div class="slide-body">
+    <div class="slide-text">
+      <p class="slide-num">Slide 4</p>
+      <h2>The Florida<br/><em>Wildfire Paradox</em></h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="n">~54"<sup class="ref">[1]</sup></div>
+          <div class="l">of rainfall per year — among the wettest U.S. states</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">#1<sup class="ref">[2]</sup></div>
+          <div class="l">state in the U.S. for lightning strike frequency</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">2 M acres<sup class="ref">[3]</sup></div>
+          <div class="l">burned by prescribed fire in Florida each year</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">26 M acres<sup class="ref">[3]</sup></div>
+          <div class="l">protected from wildfire by the Florida Forest Service</div>
+        </div>
+      </div>
+      <div class="callout">
+        Florida's wet climate fuels rapid vegetation growth — creating the very fuel load that drives wildfire risk during the <strong>dry season (February – May)</strong>. Lightning ignitions are the leading natural cause.<sup class="ref">[2][3]</sup>
+      </div>
+    </div>
+    <div class="slide-img">
+      <img src="figs/GettyImages-2256792114-scaled-e1771206624141.jpg.webp" alt="Florida wildfire scene" />
+    </div>
+  </div>
+  <div class="src-bar">
+    <strong>Sources:</strong>
+    [1] NOAA Climate Data Online, Florida statewide average precipitation &nbsp;·&nbsp;
+    [2] Vaisala National Lightning Detection Network; NOAA lightning climatology data &nbsp;·&nbsp;
+    [3] Florida Forest Service, "About Prescribed Fire"; Annual Wildfire Statistics, floridaforestservice.com
+  </div>
+  <div class="slide-badge">4 / 18</div>
+</section>
+
+
+
+<!-- ════════ S5 — Not Just Environmental Events ════════ -->
+<section class="slide" id="s5">
+  <div class="accent-bar"></div>
+  <div class="slide-body wide">
+    <div class="slide-text">
+      <h2>Wildfires Are Not Just<br/><em>Environmental Events</em></h2>
+      <div class="stat-grid" style="margin-bottom:16px;">
+        <div class="stat-card">
+          <div class="n">$250–275 B<sup class="ref">[1]</sup></div>
+          <div class="l">estimated total damage from 2025 LA wildfires</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">$700 M+<sup class="ref">[2]</sup></div>
+          <div class="l">utility transmission &amp; distribution damage, CA 2000–2016</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">$2 B+<sup class="ref">[2]</sup></div>
+          <div class="l">in business losses from a single CA power shutoff (2019)</div>
+        </div>
+        <div class="stat-card">
+          <div class="n">130<sup class="ref">[3]</sup></div>
+          <div class="l">wildfire fatalities in the U.S. in 2023 alone</div>
+        </div>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="fc-title">⚡ Power Infrastructure</div>
+          <div class="fc-body">Wildfires destroy transmission lines and force preemptive shutoffs affecting millions of residents<sup class="ref">[2]</sup></div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-title">🚗 Transportation</div>
+          <div class="fc-body">Highway closures and evacuations disrupt supply chains and emergency access routes<sup class="ref">[4]</sup></div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-title">🏥 Emergency Services</div>
+          <div class="fc-body">Hospitals, 911 systems, and first-responder capacity are all strained simultaneously<sup class="ref">[4]</sup></div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-title">🌫 Public Health</div>
+          <div class="fc-body">Wildfire smoke causes dangerous PM2.5 spikes, triggering respiratory emergencies far beyond the fire perimeter<sup class="ref">[3]</sup></div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-img">
+      <img src="figs/List of wildfires.png" alt="List of Florida wildfires" />
+    </div>
+  </div>
+  <div class="src-bar">
+    <strong>Sources:</strong>
+    [1] AccuWeather economic loss estimate, Jan 2025; Reuters damage reports &nbsp;·&nbsp;
+    [2] Columbia University Center on Global Energy Policy (CGEP), "Out of Control: The Impact of Wildfires on Our Power Sector," 2022 &nbsp;·&nbsp;
+    [3] U.S. Fire Administration (USFA) / NFPA, Fire Death Statistics 2023 &nbsp;·&nbsp;
+    [4] National Fire Protection Association (NFPA); FEMA Wildfire Risk Reports
+  </div>
+  <div class="slide-badge">5 / 18</div>
+</section>
+
+
+<!-- ════════ S6 — Motivation 1: Data / Commons ════════ -->
+<section class="slide" id="s6">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:28px;">
+    <div class="hook-line" style="font-size:clamp(1.5rem,2.8vw,2.2rem); max-width:740px;">Wildfire research has always demanded massive amounts of data.<br/><em>It's scattered across hundreds of agencies and institutions.</em></div>
+    <svg width="200" height="200" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer pulse ring -->
+        <circle cx="40" cy="42" r="18" fill="none" stroke="rgba(232,98,10,0.15)" stroke-width="1"/>
+        <!-- Hub circle -->
+        <circle cx="40" cy="42" r="11" fill="rgba(232,98,10,0.18)" stroke="#E8620A" stroke-width="1.8"/>
+        <circle cx="40" cy="42" r="5" fill="#E8620A"/>
+        <!-- Hub inner cross (AI/data symbol) -->
+        <line x1="36.5" y1="42" x2="43.5" y2="42" stroke="rgba(250,243,224,0.55)" stroke-width="1.2"/>
+        <line x1="40" y1="38.5" x2="40" y2="45.5" stroke="rgba(250,243,224,0.55)" stroke-width="1.2"/>
+        <!-- DB cylinder — top-left -->
+        <ellipse cx="13" cy="17" rx="7" ry="2.5" fill="rgba(245,166,35,0.2)" stroke="#F5A623" stroke-width="1.3"/>
+        <rect x="6" y="17" width="14" height="9" fill="rgba(245,166,35,0.08)" stroke="#F5A623" stroke-width="1.3"/>
+        <ellipse cx="13" cy="26" rx="7" ry="2.5" fill="rgba(245,166,35,0.12)" stroke="#F5A623" stroke-width="1.3"/>
+        <line x1="6" y1="21" x2="20" y2="21" stroke="#F5A623" stroke-width="0.8" opacity="0.55"/>
+        <line x1="6" y1="23.5" x2="20" y2="23.5" stroke="#F5A623" stroke-width="0.6" opacity="0.35"/>
+        <!-- Satellite dish — top-right -->
+        <path d="M66 14 A8 8 0 0 1 74 22" stroke="#F5A623" stroke-width="1" fill="none" opacity="0.45"/>
+        <path d="M64 11 A12 12 0 0 1 76 23" stroke="#F5A623" stroke-width="0.8" fill="none" opacity="0.3"/>
+        <path d="M68 17 A4 4 0 0 1 72 21" stroke="#E8620A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <circle cx="65" cy="18" r="2.8" fill="#E8620A" opacity="0.85"/>
+        <line x1="65" y1="20.5" x2="64" y2="27" stroke="#E8620A" stroke-width="1.4"/>
+        <line x1="61" y1="27" x2="68" y2="27" stroke="#E8620A" stroke-width="1.4" stroke-linecap="round"/>
+        <!-- Sensor/device node — bottom-left -->
+        <rect x="5" y="59" width="16" height="13" rx="2" fill="rgba(245,166,35,0.1)" stroke="#F5A623" stroke-width="1.3"/>
+        <line x1="8" y1="63" x2="18" y2="63" stroke="#F5A623" stroke-width="0.9" opacity="0.6"/>
+        <line x1="8" y1="66" x2="18" y2="66" stroke="#F5A623" stroke-width="0.9" opacity="0.6"/>
+        <line x1="8" y1="69" x2="15" y2="69" stroke="#F5A623" stroke-width="0.9" opacity="0.4"/>
+        <line x1="13" y1="59" x2="13" y2="54" stroke="#F5A623" stroke-width="1.3"/>
+        <circle cx="13" cy="53" r="1.8" fill="#F5A623" opacity="0.75"/>
+        <!-- Cloud node — bottom-right -->
+        <path d="M58 70 Q58 64 62 62 Q62 57 67 57 Q73 57 73 62 Q77 62 77 66 Q77 71 73 71 Z" fill="rgba(232,98,10,0.12)" stroke="#E8620A" stroke-width="1.3"/>
+        <line x1="62" y1="68" x2="69" y2="68" stroke="#E8620A" stroke-width="0.8" opacity="0.5" stroke-dasharray="2,1.5"/>
+        <!-- Flow lines with data packet circles -->
+        <line x1="21" y1="24" x2="30" y2="36" stroke="#F5A623" stroke-width="1.4" stroke-dasharray="4,2.5" opacity="0.75"/>
+        <circle cx="25.5" cy="30" r="2" fill="#F5A623" opacity="0.95"/>
+        <line x1="63" y1="27" x2="50" y2="35" stroke="#F5A623" stroke-width="1.4" stroke-dasharray="4,2.5" opacity="0.7"/>
+        <circle cx="56.5" cy="31" r="2" fill="#F5A623" opacity="0.9"/>
+        <line x1="22" y1="62" x2="30" y2="51" stroke="#E8620A" stroke-width="1.4" stroke-dasharray="4,2.5" opacity="0.7"/>
+        <circle cx="26" cy="56.5" r="2" fill="#E8620A" opacity="0.9"/>
+        <line x1="58" y1="64" x2="50" y2="52" stroke="#E8620A" stroke-width="1.4" stroke-dasharray="4,2.5" opacity="0.7"/>
+        <circle cx="54" cy="58" r="2" fill="#E8620A" opacity="0.9"/>
+      </svg>
+    <div class="mot-bridge">Talk 1 &nbsp;·&nbsp; 10:30 AM &nbsp;→&nbsp; Dr. İlkay Altıntaş · UC San Diego</div>
+  </div>
+  <div class="slide-badge">6 / 18</div>
+</section>
+
+
+<!-- ════════ S7 — Talk 1: Altintas ════════ -->
+<section class="slide" id="s7">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:24px;">
+    <img class="presenter-photo" src="presenters/ilkay_altintas.jpeg" alt="Dr. İlkay Altıntaş" />
+    <h2 style="font-size:clamp(1.8rem,3.8vw,3rem);">Dr. İlkay Altıntaş<br/><em>UC San Diego</em></h2>
+    <p class="talk-title">"The Wildfire Commons: Building a Shared Digital Ecosystem for AI-Ready Fire Science and Resilience"</p>
+    <div class="callout" style="max-width:700px;">What becomes possible when every researcher and every agency builds on the same foundation?</div>
+  </div>
+  <div class="slide-badge">7 / 18</div>
+</section>
+
+
+<!-- ════════ S8 — Motivation 2: Fire Physics ════════ -->
+<section class="slide" id="s8">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:28px;">
+    <div class="hook-line" style="font-size:clamp(1.5rem,2.8vw,2.2rem); max-width:740px;">Fire creates its own wind.<br/><em>That wind can carry burning embers two miles ahead of the fire line.</em></div>
+    <svg width="200" height="200" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ground -->
+        <line x1="4" y1="74" x2="76" y2="74" stroke="rgba(232,98,10,0.3)" stroke-width="1.2"/>
+        <!-- Main flame at bottom-left -->
+        <path d="M12 74 Q16 62 12 54 Q10 62 7 58 Q8 53 5 50 Q2 56 4 74 Q7 77 12 74Z" fill="#E8620A" opacity="0.9"/>
+        <path d="M16 74 Q20 65 17 58 Q15 64 12 62 Q14 57 12 54 Q15 58 18 62 Q20 68 16 74Z" fill="#F5A623" opacity="0.65"/>
+        <!-- Inner hot flame core -->
+        <path d="M12 74 Q14 67 12 62 Q10 66 9 64 Q11 60 10 57 Q12 61 14 66 Q14 74 12 74Z" fill="rgba(250,243,224,0.35)"/>
+        <!-- Smoke plume (wide, rising) -->
+        <path d="M12 52 Q6 42 10 32 Q16 22 10 12" stroke="rgba(250,243,224,0.18)" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M14 52 Q20 44 16 34 Q12 26 18 16" stroke="rgba(250,243,224,0.10)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <!-- Wind stream lines (turbulent, layered) -->
+        <path d="M20 18 Q30 10 42 18 Q54 26 64 18 Q68 15 76 18" stroke="#E8620A" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+        <path d="M20 30 Q32 22 44 30 Q56 38 66 30 Q70 27 76 30" stroke="#F5A623" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8"/>
+        <path d="M22 42 Q34 34 46 42 Q58 50 68 42 Q71 39 76 42" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.55"/>
+        <path d="M24 54 Q36 47 50 54 Q60 59 72 54" stroke="#F5A623" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.3"/>
+        <!-- Firebrand 1: high long arc -->
+        <path d="M15 57 Q42 8 68 26" stroke="#E8620A" stroke-width="1.3" stroke-dasharray="3.5,2.5" fill="none" opacity="0.85"/>
+        <circle cx="68" cy="26" r="3.5" fill="#E8620A" opacity="0.95"/>
+        <circle cx="68" cy="26" r="6" fill="rgba(232,98,10,0.18)"/>
+        <!-- Firebrand 2: medium arc -->
+        <path d="M15 61 Q36 22 55 38" stroke="#F5A623" stroke-width="1.2" stroke-dasharray="3.5,2.5" fill="none" opacity="0.7"/>
+        <circle cx="55" cy="38" r="2.8" fill="#F5A623" opacity="0.9"/>
+        <circle cx="55" cy="38" r="4.5" fill="rgba(245,166,35,0.15)"/>
+        <!-- Firebrand 3: short arc -->
+        <path d="M15 66 Q26 45 38 55" stroke="#F5A623" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.5"/>
+        <circle cx="38" cy="55" r="2" fill="#F5A623" opacity="0.7"/>
+        <!-- Wind direction arrow — top right -->
+        <line x1="64" y1="10" x2="76" y2="10" stroke="#E8620A" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M71 6 L77 10 L71 14" stroke="#E8620A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    <div class="mot-bridge">Talk 2 &nbsp;·&nbsp; 11:30 AM &nbsp;→&nbsp; Dr. Neda Yaghoobian · Florida State University</div>
+  </div>
+  <div class="slide-badge">8 / 18</div>
+</section>
+
+
+<!-- ════════ S9 — Talk 2: Yaghoobian ════════ -->
+<section class="slide" id="s9">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:24px;">
+    <img class="presenter-photo" src="presenters/neda_Y.png" alt="Dr. Neda Yaghoobian" />
+    <h2 style="font-size:clamp(1.8rem,3.8vw,3rem);">Dr. Neda Yaghoobian<br/><em>Florida State University</em></h2>
+    <p class="talk-title">"Toward Predictive Understanding of Fire-Induced Transport in the Atmospheric Boundary Layer"</p>
+    <div class="callout" style="max-width:700px;">In 2025, neighborhoods burned hours after the fire front passed — from firebrands. Can computational modeling help predict that in advance?</div>
+  </div>
+  <div class="slide-badge">9 / 18</div>
+</section>
+
+
+<!-- ════════ S10 — Motivation 3: Evacuation ════════ -->
+<section class="slide" id="s10">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:28px;">
+    <div class="hook-line" style="font-size:clamp(1.5rem,2.8vw,2.2rem); max-width:740px;">January 2025. The Pacific Palisades evacuation route<br/><em>was blocked 25 minutes after the order was issued.</em></div>
+    <svg width="200" height="200" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Road surface (3 lanes) -->
+        <rect x="4" y="26" width="72" height="34" rx="3" fill="rgba(232,98,10,0.08)" stroke="#E8620A" stroke-width="1.5"/>
+        <!-- Shoulder markings -->
+        <line x1="4" y1="33" x2="76" y2="33" stroke="#F5A623" stroke-width="0.8" opacity="0.45"/>
+        <line x1="4" y1="52" x2="76" y2="52" stroke="#F5A623" stroke-width="0.8" opacity="0.45"/>
+        <!-- Lane dividers upper (y=38.5) -->
+        <line x1="8"  y1="38.5" x2="16" y2="38.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="22" y1="38.5" x2="30" y2="38.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="36" y1="38.5" x2="44" y2="38.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="50" y1="38.5" x2="58" y2="38.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="64" y1="38.5" x2="70" y2="38.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <!-- Lane dividers lower (y=45.5) -->
+        <line x1="8"  y1="45.5" x2="16" y2="45.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="22" y1="45.5" x2="30" y2="45.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="36" y1="45.5" x2="44" y2="45.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="50" y1="45.5" x2="58" y2="45.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="64" y1="45.5" x2="70" y2="45.5" stroke="#F5A623" stroke-width="1" stroke-dasharray="5,3" opacity="0.6"/>
+        <!-- Top lane cars (congested, 3 cars) -->
+        <rect x="52" y="28" width="17" height="10" rx="2" fill="#E8620A" opacity="0.9"/>
+        <rect x="54" y="30" width="6" height="4" rx="0.8" fill="rgba(250,243,224,0.35)"/>
+        <rect x="30" y="28" width="17" height="10" rx="2" fill="#F5A623" opacity="0.75"/>
+        <rect x="32" y="30" width="6" height="4" rx="0.8" fill="rgba(250,243,224,0.25)"/>
+        <rect x="10" y="28" width="15" height="10" rx="2" fill="#E8620A" opacity="0.6"/>
+        <rect x="12" y="30" width="5" height="4" rx="0.8" fill="rgba(250,243,224,0.2)"/>
+        <!-- Middle lane cars (4 cars, jammed) -->
+        <rect x="58" y="40" width="14" height="10" rx="2" fill="#F5A623" opacity="0.8"/>
+        <rect x="60" y="42" width="5" height="4" rx="0.8" fill="rgba(250,243,224,0.25)"/>
+        <rect x="40" y="40" width="14" height="10" rx="2" fill="#E8620A" opacity="0.7"/>
+        <rect x="42" y="42" width="5" height="4" rx="0.8" fill="rgba(250,243,224,0.22)"/>
+        <rect x="22" y="40" width="14" height="10" rx="2" fill="#F5A623" opacity="0.6"/>
+        <rect x="24" y="42" width="5" height="4" rx="0.8" fill="rgba(250,243,224,0.18)"/>
+        <rect x="6"  y="40" width="12" height="10" rx="2" fill="#E8620A" opacity="0.5"/>
+        <rect x="8"  y="42" width="4" height="4" rx="0.8" fill="rgba(250,243,224,0.15)"/>
+        <!-- Bottom lane cars (3 cars) -->
+        <rect x="54" y="53" width="16" height="10" rx="2" fill="#E8620A" opacity="0.65"/>
+        <rect x="56" y="55" width="6" height="4" rx="0.8" fill="rgba(250,243,224,0.2)"/>
+        <rect x="32" y="53" width="16" height="10" rx="2" fill="#F5A623" opacity="0.55"/>
+        <rect x="34" y="55" width="6" height="4" rx="0.8" fill="rgba(250,243,224,0.16)"/>
+        <rect x="10" y="53" width="16" height="10" rx="2" fill="#E8620A" opacity="0.45"/>
+        <rect x="12" y="55" width="6" height="4" rx="0.8" fill="rgba(250,243,224,0.12)"/>
+        <!-- GPS pin above road -->
+        <circle cx="40" cy="14" r="6" fill="rgba(232,98,10,0.25)" stroke="#E8620A" stroke-width="1.6"/>
+        <circle cx="40" cy="14" r="2.5" fill="#E8620A"/>
+        <path d="M37 18.5 Q40 25 40 25 Q40 25 43 18.5" fill="#E8620A" opacity="0.85"/>
+        <!-- Signal waves from GPS -->
+        <path d="M34.5 9.5 Q37 7 40 7 Q43 7 45.5 9.5" stroke="#F5A623" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+        <path d="M31 6.5 Q35 2 40 2 Q45 2 49 6.5" stroke="#F5A623" stroke-width="0.9" fill="none" stroke-linecap="round" opacity="0.4"/>
+        <!-- Evacuation arrow right -->
+        <line x1="70" y1="43" x2="78" y2="43" stroke="#E8620A" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M74 38.5 L79.5 43 L74 47.5" stroke="#E8620A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    <div class="mot-bridge">Talk 3 &nbsp;·&nbsp; 1:30 PM &nbsp;→&nbsp; Dr. Xilei Zhao · University of Florida</div>
+  </div>
+  <div class="slide-badge">10 / 18</div>
+</section>
+
+
+<!-- ════════ S11 — Talk 3: Zhao ════════ -->
+<section class="slide" id="s11">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:24px;">
+    <img class="presenter-photo" src="presenters/xinleizhao.png" alt="Dr. Xilei Zhao" />
+    <h2 style="font-size:clamp(1.8rem,3.8vw,3rem);">Dr. Xilei Zhao<br/><em>University of Florida</em></h2>
+    <p class="talk-title">"Powering Wildfire Evacuation Analysis and Modeling with Big Data and AI"</p>
+    <div class="callout" style="max-width:700px;">If we could anticipate gridlock before it forms — could we redesign how entire cities escape?</div>
+  </div>
+  <div class="slide-badge">11 / 18</div>
+</section>
+
+
+<!-- ════════ S12 — Motivation 4: Fire Ecology ════════ -->
+<section class="slide" id="s12">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:28px;">
+    <div class="hook-line" style="font-size:clamp(1.5rem,2.8vw,2.2rem); max-width:740px;">500 years ago, fire moved through Florida's forests<br/><em>every 2–3 years. Today that interval is 50+ years.</em></div>
+    <svg width="200" height="200" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ground -->
+        <line x1="0" y1="70" x2="80" y2="70" stroke="rgba(232,98,10,0.3)" stroke-width="1"/>
+        <!-- Tree 1 (leftmost, small) -->
+        <polygon points="10,52 5,64 15,64" fill="rgba(245,166,35,0.15)" stroke="#F5A623" stroke-width="1.2" stroke-linejoin="round"/>
+        <polygon points="10,60 4,70 16,70" fill="rgba(245,166,35,0.1)" stroke="#F5A623" stroke-width="1.2" stroke-linejoin="round"/>
+        <rect x="8.5" y="68" width="3" height="4" rx="0.7" fill="rgba(232,98,10,0.2)" stroke="#E8620A" stroke-width="0.8"/>
+        <!-- Tree 2 -->
+        <polygon points="22,40 16,56 28,56" fill="rgba(245,166,35,0.2)" stroke="#F5A623" stroke-width="1.3" stroke-linejoin="round"/>
+        <polygon points="22,52 15,66 29,66" fill="rgba(245,166,35,0.12)" stroke="#F5A623" stroke-width="1.3" stroke-linejoin="round"/>
+        <rect x="20.5" y="64" width="3" height="6" rx="0.7" fill="rgba(232,98,10,0.2)" stroke="#E8620A" stroke-width="0.8"/>
+        <!-- Tree 3 (tallest, center) -->
+        <polygon points="40,24 33,46 47,46" fill="rgba(245,166,35,0.25)" stroke="#F5A623" stroke-width="1.5" stroke-linejoin="round"/>
+        <polygon points="40,40 32,60 48,60" fill="rgba(245,166,35,0.15)" stroke="#F5A623" stroke-width="1.5" stroke-linejoin="round"/>
+        <rect x="38.5" y="58" width="3" height="12" rx="0.7" fill="rgba(232,98,10,0.22)" stroke="#E8620A" stroke-width="0.9"/>
+        <!-- Tree 4 -->
+        <polygon points="58,36 52,54 64,54" fill="rgba(245,166,35,0.2)" stroke="#F5A623" stroke-width="1.3" stroke-linejoin="round"/>
+        <polygon points="58,50 51,64 65,64" fill="rgba(245,166,35,0.12)" stroke="#F5A623" stroke-width="1.3" stroke-linejoin="round"/>
+        <rect x="56.5" y="62" width="3" height="8" rx="0.7" fill="rgba(232,98,10,0.2)" stroke="#E8620A" stroke-width="0.8"/>
+        <!-- Tree 5 (rightmost, small) -->
+        <polygon points="70,48 65,60 75,60" fill="rgba(245,166,35,0.15)" stroke="#F5A623" stroke-width="1.2" stroke-linejoin="round"/>
+        <polygon points="70,56 64,68 76,68" fill="rgba(245,166,35,0.1)" stroke="#F5A623" stroke-width="1.2" stroke-linejoin="round"/>
+        <rect x="68.5" y="66" width="3" height="4" rx="0.7" fill="rgba(232,98,10,0.18)" stroke="#E8620A" stroke-width="0.8"/>
+        <!-- Fire sweeping across ground -->
+        <path d="M2 70 Q10 60 18 65 Q22 58 28 64 Q32 56 38 63 Q42 56 48 63 Q52 58 58 64 Q62 58 68 64 Q72 60 78 65 L78 74 L2 74 Z" fill="rgba(232,98,10,0.65)"/>
+        <!-- Fire highlight top edge -->
+        <path d="M4 70 Q12 61 20 66 Q25 59 30 65 Q35 57 40 64 Q45 57 50 64 Q55 59 62 65 Q66 59 74 65" stroke="#F5A623" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.85"/>
+        <!-- Smoke plumes -->
+        <path d="M22 64 Q18 52 22 42 Q26 34 20 24" stroke="rgba(250,243,224,0.15)" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M40 62 Q36 50 40 38 Q44 28 38 16" stroke="rgba(250,243,224,0.10)" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M58 64 Q54 52 58 42 Q62 34 56 24" stroke="rgba(250,243,224,0.12)" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <!-- Timeline bar at top: frequent vs infrequent fire intervals -->
+        <rect x="4" y="4" width="72" height="5" rx="2.5" fill="rgba(245,166,35,0.1)" stroke="#F5A623" stroke-width="0.9"/>
+        <!-- Frequent fire markers (left — short intervals) -->
+        <line x1="10" y1="2" x2="10" y2="11" stroke="#E8620A" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="18" y1="2" x2="18" y2="11" stroke="#E8620A" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+        <line x1="26" y1="2" x2="26" y2="11" stroke="#E8620A" stroke-width="1.3" stroke-linecap="round" opacity="0.5"/>
+        <!-- Infrequent fire marker (right — large gap, one lone tick) -->
+        <line x1="68" y1="2" x2="68" y2="11" stroke="rgba(232,98,10,0.4)" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+    <div class="mot-bridge">Talk 4 &nbsp;·&nbsp; 2:30 PM &nbsp;→&nbsp; Dr. J. Morgan Varner · Tall Timbers</div>
+  </div>
+  <div class="slide-badge">12 / 18</div>
+</section>
+
+
+<!-- ════════ S13 — Talk 4: Varner ════════ -->
+<section class="slide" id="s13">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:24px;">
+    <img class="presenter-photo" src="presenters/Morgan_Varner_new.png" alt="Dr. J. Morgan Varner" />
+    <h2 style="font-size:clamp(1.8rem,3.8vw,3rem);">Dr. J. Morgan Varner<br/><em>Tall Timbers Research Station</em></h2>
+    <p class="talk-title">"Fire in the Southeast: History, Present, and Future"</p>
+    <div class="callout" style="max-width:700px;">A century of fire ecology — and an honest accounting of what fire management has gotten right, and where it has fallen short.</div>
+  </div>
+  <div class="slide-badge">13 / 18</div>
+</section>
+
+
+<!-- ════════ S14 — Motivation 5: Infrastructure ════════ -->
+<section class="slide" id="s14">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:28px;">
+    <div class="hook-line" style="font-size:clamp(1.5rem,2.8vw,2.2rem); max-width:740px;">November 8, 2018. A transmission line failed.<br/><em>85 people died. The Camp Fire had begun.</em></div>
+    <svg width="200" height="200" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Fire glow background at bottom -->
+        <rect x="0" y="56" width="80" height="24" fill="rgba(232,98,10,0.07)" rx="2"/>
+        <!-- Tower 1 (left side) -->
+        <line x1="20" y1="10" x2="20" y2="65" stroke="#E8620A" stroke-width="2.5"/>
+        <line x1="8"  y1="16" x2="32" y2="16" stroke="#F5A623" stroke-width="2.2"/>
+        <line x1="11" y1="26" x2="29" y2="26" stroke="#F5A623" stroke-width="1.8"/>
+        <!-- Tower 1 guy wires -->
+        <line x1="8"  y1="16" x2="13" y2="65" stroke="#E8620A" stroke-width="1.2" opacity="0.55"/>
+        <line x1="32" y1="16" x2="27" y2="65" stroke="#E8620A" stroke-width="1.2" opacity="0.55"/>
+        <line x1="11" y1="26" x2="14" y2="65" stroke="#E8620A" stroke-width="1"   opacity="0.4"/>
+        <line x1="29" y1="26" x2="26" y2="65" stroke="#E8620A" stroke-width="1"   opacity="0.4"/>
+        <!-- Tower 1 feet -->
+        <line x1="13" y1="65" x2="9"  y2="72" stroke="#E8620A" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="27" y1="65" x2="31" y2="72" stroke="#E8620A" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="20" y1="65" x2="20" y2="72" stroke="#E8620A" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Tower 2 (right side) -->
+        <line x1="60" y1="10" x2="60" y2="65" stroke="#E8620A" stroke-width="2.5"/>
+        <line x1="48" y1="16" x2="72" y2="16" stroke="#F5A623" stroke-width="2.2"/>
+        <line x1="51" y1="26" x2="69" y2="26" stroke="#F5A623" stroke-width="1.8"/>
+        <line x1="48" y1="16" x2="53" y2="65" stroke="#E8620A" stroke-width="1.2" opacity="0.55"/>
+        <line x1="72" y1="16" x2="67" y2="65" stroke="#E8620A" stroke-width="1.2" opacity="0.55"/>
+        <line x1="51" y1="26" x2="54" y2="65" stroke="#E8620A" stroke-width="1"   opacity="0.4"/>
+        <line x1="69" y1="26" x2="66" y2="65" stroke="#E8620A" stroke-width="1"   opacity="0.4"/>
+        <line x1="53" y1="65" x2="49" y2="72" stroke="#E8620A" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="67" y1="65" x2="71" y2="72" stroke="#E8620A" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="60" y1="65" x2="60" y2="72" stroke="#E8620A" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Transmission lines (catenary curves) -->
+        <path d="M8  16 Q40 32 72 16" stroke="#F5A623" stroke-width="1.8" fill="none" opacity="0.9"/>
+        <path d="M32 16 Q40 26 48 16" stroke="#F5A623" stroke-width="1.8" fill="none" opacity="0.75"/>
+        <path d="M11 26 Q40 42 69 26" stroke="#F5A623" stroke-width="1.4" fill="none" opacity="0.65"/>
+        <path d="M29 26 Q40 36 51 26" stroke="#F5A623" stroke-width="1.4" fill="none" opacity="0.5"/>
+        <!-- Fire clusters below towers -->
+        <path d="M12 72 Q15 63 12 57 Q10 63 8 60 Q9 55 6 53 Q4 58 6 72 Q8 75 12 72Z" fill="#E8620A" opacity="0.85"/>
+        <path d="M16 72 Q19 65 16 60 Q14 64 12 62 Q14 58 12 57 Q15 61 18 65 Q19 72 16 72Z" fill="#F5A623" opacity="0.6"/>
+        <path d="M36 72 Q40 61 36 54 Q34 61 31 57 Q33 52 30 49 Q28 55 30 72 Q32 75 36 72Z" fill="#E8620A" opacity="0.8"/>
+        <path d="M44 72 Q48 63 44 57 Q42 62 40 59 Q41 55 38 52 Q36 57 40 72 Q42 75 44 72Z" fill="#F5A623" opacity="0.55"/>
+        <path d="M64 72 Q67 63 64 57 Q62 63 60 60 Q61 55 58 53 Q56 58 58 72 Q60 75 64 72Z" fill="#E8620A" opacity="0.8"/>
+        <path d="M68 72 Q71 65 68 60 Q66 64 64 62 Q66 58 64 57 Q67 61 70 65 Q71 72 68 72Z" fill="#F5A623" opacity="0.55"/>
+        <!-- Lightning bolt (ignition event) -->
+        <path d="M42 27 L36 42 L44 42 L36 60" stroke="#F5A623" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <!-- Ignition glow -->
+        <circle cx="36" cy="60" r="5" fill="rgba(245,166,35,0.3)"/>
+        <circle cx="36" cy="60" r="2.5" fill="#F5A623" opacity="0.9"/>
+        <!-- Spark lines at ignition -->
+        <line x1="36" y1="58" x2="30" y2="53" stroke="#F5A623" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+        <line x1="36" y1="60" x2="29" y2="60" stroke="#F5A623" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+        <line x1="36" y1="60" x2="30" y2="66" stroke="#F5A623" stroke-width="1"   stroke-linecap="round" opacity="0.4"/>
+      </svg>
+    <div class="mot-bridge">Talk 5 &nbsp;·&nbsp; 4:15 PM &nbsp;→&nbsp; Dr. Neetesh Sharma · RIDER Center, FAMU–FSU</div>
+  </div>
+  <div class="slide-badge">14 / 18</div>
+</section>
+
+
+<!-- ════════ S15 — Talk 5: Sharma ════════ -->
+<section class="slide" id="s15">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="justify-items:center; align-content:center; text-align:center; padding:52px 10vw; gap:24px;">
+    <img class="presenter-photo" src="presenters/Neetesh_Sharma.jpeg" alt="Dr. Neetesh Sharma" />
+    <h2 style="font-size:clamp(1.8rem,3.8vw,3rem);">Dr. Neetesh Sharma<br/><em>RIDER Center, FAMU–FSU</em></h2>
+    <p class="talk-title">"Advances in Probabilistic Ignition Modeling for Assessing Infrastructure–Wildfire Interactions"</p>
+    <div class="callout" style="max-width:700px;">The power grid outside this building runs through fire-prone land. How likely is it to start — or be destroyed by — the next wildfire?</div>
+  </div>
+  <div class="slide-badge">15 / 18</div>
+</section>
+
+
+<!-- ════════ S19 — The Panels ════════ -->
+<section class="slide" id="s16">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="padding: 44px 7vw 52px calc(7vw + 14px);">
+    <div class="slide-text" style="width:100%; max-width:900px;">
+      <h2 style="font-size:clamp(1.8rem,3.2vw,2.6rem); margin-bottom:18px;">Science Meets Practice:<br/><em>Two Discussion Panels</em></h2>
+      <p style="font-size:clamp(1rem,1.6vw,1.2rem); color:var(--muted); margin-bottom:24px; line-height:1.65;">
+        At 3:30 PM, the five talks converge. Researchers sit alongside the practitioners who have to act on their findings — a fire scientist and a fire captain rarely look at the same data the same way.
+      </p>
+      <div class="panel-grid">
+        <div class="panel-block">
+          <div class="panel-label">Panel 1 · 3:15 PM</div>
+          <div class="panel-title">Wildfire Science &amp; Predictive Modeling</div>
+          <div class="panelist">
+            <div class="panelist-name">İlkay Altıntaş</div>
+            <div class="panelist-affil">UC San Diego · SDSC; Founder, WIFIRE Program</div>
+          </div>
+          <div class="panelist">
+            <div class="panelist-name">Neda Yaghoobian</div>
+            <div class="panelist-affil">Florida State University · CFD &amp; Fire-Atmosphere Dynamics</div>
+          </div>
+          <div class="panelist">
+            <div class="panelist-name">J. Morgan Varner</div>
+            <div class="panelist-affil">Tall Timbers · Director of Research · President, AFE</div>
+          </div>
+        </div>
+        <div class="panel-block">
+          <div class="panel-label">Panel 2 · 3:45 PM</div>
+          <div class="panel-title">Response, Planning &amp; Decision-Making</div>
+          <div class="panelist">
+            <div class="panelist-name">Xilei Zhao</div>
+            <div class="panelist-affil">University of Florida · AI for Disaster Resilience</div>
+          </div>
+          <div class="panelist">
+            <div class="panelist-name">Divina Lade</div>
+            <div class="panelist-affil">Apalachee Regional Planning Council · Geospatial &amp; Resilience Planning</div>
+          </div>
+          <div class="panelist">
+            <div class="panelist-name">Donald Johnson Jr.</div>
+            <div class="panelist-affil">Tallahassee Fire Department · 29 yrs fire · FL Task Force 7</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-badge">16 / 18</div>
+</section>
+
+
+<!-- ════════ S20 — WORKSHOP AGENDA ════════ -->
+<section class="slide" id="s17">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="padding: 44px 7vw 52px calc(7vw + 14px); align-content: center;">
+    <div class="slide-text" style="width:100%; max-width:820px;">
+      <h2><em>Workshop Agenda</em></h2>
+      <div class="schedule">
+        <div class="schedule-row hi">
+          <div class="sch-time">10:00 – 10:30 AM</div>
+          <div class="sch-desc"><strong>Opening Remarks</strong></div>
+        </div>
+        <div class="schedule-row">
+          <div class="sch-time">10:30 – 11:15 AM</div>
+          <div class="sch-desc">
+            <strong>Talk 1</strong> &nbsp;·&nbsp; Dr. İlkay Altıntaş · UC San Diego
+            <div class="sch-q">The Wildfire Commons: a shared AI-ready platform for fire science and resilience</div>
+          </div>
+        </div>
+        <div class="schedule-row brk">
+          <div class="sch-time">11:15 – 11:30 AM</div>
+          <div class="sch-desc">Coffee Break</div>
+        </div>
+        <div class="schedule-row">
+          <div class="sch-time">11:30 AM – 12:15 PM</div>
+          <div class="sch-desc">
+            <strong>Talk 2</strong> &nbsp;·&nbsp; Dr. Neda Yaghoobian · Florida State University
+            <div class="sch-q">Fire-induced transport in the atmospheric boundary layer: toward predictive understanding</div>
+          </div>
+        </div>
+        <div class="schedule-row brk">
+          <div class="sch-time">12:30 – 1:30 PM</div>
+          <div class="sch-desc">Lunch Break</div>
+        </div>
+        <div class="schedule-row">
+          <div class="sch-time">1:30 – 2:15 PM</div>
+          <div class="sch-desc">
+            <strong>Talk 3</strong> &nbsp;·&nbsp; Dr. Xilei Zhao · University of Florida
+            <div class="sch-q">Wildfire evacuation analysis and modeling powered by GPS big data and AI</div>
+          </div>
+        </div>
+        <div class="schedule-row brk">
+          <div class="sch-time">2:15 – 2:30 PM</div>
+          <div class="sch-desc">Coffee Break</div>
+        </div>
+        <div class="schedule-row">
+          <div class="sch-time">2:30 – 3:15 PM</div>
+          <div class="sch-desc">
+            <strong>Talk 4</strong> &nbsp;·&nbsp; Dr. J. Morgan Varner · Tall Timbers
+            <div class="sch-q">Fire in the Southeast: history, present, and future of prescribed fire and fire ecology</div>
+          </div>
+        </div>
+        <div class="schedule-row brk">
+          <div class="sch-time">3:15 – 3:30 PM</div>
+          <div class="sch-desc">Coffee Break</div>
+        </div>
+        <div class="schedule-row hi">
+          <div class="sch-time">3:30 – 4:15 PM</div>
+          <div class="sch-desc"><strong>Discussion Panels</strong> &nbsp;·&nbsp; Researchers + Community Stakeholders</div>
+        </div>
+        <div class="schedule-row">
+          <div class="sch-time">4:15 – 5:00 PM</div>
+          <div class="sch-desc">
+            <strong>Talk 5</strong> &nbsp;·&nbsp; Dr. Neetesh Sharma · RIDER Center, FAMU-FSU
+            <div class="sch-q">Probabilistic ignition modeling: assessing infrastructure–wildfire interactions</div>
+          </div>
+        </div>
+        <div class="schedule-row hi">
+          <div class="sch-time">5:00 – 5:15 PM</div>
+          <div class="sch-desc"><strong>Closing Remarks</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="src-bar">
+    <strong>Source:</strong> Workshop official program · labrai.github.io/WildFireWorkshop/ &nbsp;·&nbsp; All times Eastern Time (ET) &nbsp;·&nbsp; IGNITE Tallahassee, 1729 W. Paul Dirac Drive, Tallahassee, FL 32310
+  </div>
+  <div class="slide-badge">17 / 18</div>
+</section>
+
+
+<!-- ════════ S21 — CLOSING ════════ -->
+<section class="slide" id="s18">
+  <div class="accent-bar"></div>
+  <div class="slide-body full" style="grid-template-columns:1fr; justify-items:center; text-align:center; align-content:center;">
+    <div class="slide-text" style="align-items:center; max-width:660px;">
+      <h2 style="margin-bottom:28px;"><em>The 1st North Florida Wildfire Science &amp; Technology Workshop</em></h2>
+      <div class="tag-row">
+        <span class="tag">Data Commons</span>
+        <span class="tag">Fire Physics</span>
+        <span class="tag">Evacuation AI</span>
+        <span class="tag">Fire Ecology</span>
+        <span class="tag">Infrastructure Resilience</span>
+      </div>
+      <p class="closing-quote">
+        Each talk today addresses one open question at the frontier of wildfire science.<br/><br/>
+        By 5 PM, you'll have heard five researchers' best current answers —<br/>
+        and the practitioners who have to act on them.<br/><br/>
+        <span style="color:var(--amber); font-weight:600;">Let's begin.</span>
+      </p>
+    </div>
+  </div>
+  <div class="slide-badge">18 / 18</div>
+</section>
+
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots   = document.querySelectorAll('.nav-dot');
+
+  function updateDots() {
+    const mid = window.scrollY + window.innerHeight / 2;
+    let cur = 0;
+    slides.forEach((s, i) => { if (s.offsetTop <= mid) cur = i; });
+    dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+  }
+
+  window.addEventListener('scroll', updateDots, { passive: true });
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      document.getElementById(dot.dataset.target)?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  document.addEventListener('keydown', e => {
+    const cur = [...dots].findIndex(d => d.classList.contains('active'));
+    if ((e.key === 'ArrowDown' || e.key === 'PageDown') && cur < slides.length - 1)
+      slides[cur + 1].scrollIntoView({ behavior: 'smooth' });
+    if ((e.key === 'ArrowUp' || e.key === 'PageUp') && cur > 0)
+      slides[cur - 1].scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
